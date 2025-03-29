@@ -2,6 +2,35 @@
 <search> 
   
   
+    
+    <entry>
+      <title>算法时间复杂度与空间复杂度详解</title>
+      <link href="/2025/03/29/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E7%AE%97%E6%B3%95%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%8E%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
+      <url>/2025/03/29/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E7%AE%97%E6%B3%95%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%8E%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/</url>
+      
+        <content type="html"><![CDATA[<h3 id="算法时间复杂度与空间复杂度"><a href="#算法时间复杂度与空间复杂度" class="headerlink" title="算法时间复杂度与空间复杂度"></a>算法时间复杂度与空间复杂度</h3><h4 id="什么是算法复杂度"><a href="#什么是算法复杂度" class="headerlink" title="什么是算法复杂度"></a>什么是算法复杂度</h4><p>算法复杂度是衡量算法效率的重要指标，主要包括：</p><ul><li><strong>时间复杂度</strong>：算法执行所需的时间量级</li><li><strong>空间复杂度</strong>：算法执行所需的内存空间量级</li></ul><p>复杂度作用：</p><ol><li>比较不同算法的效率</li><li>预测算法在不同规模数据下的表现</li><li>优化程序性能</li></ol><h4 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h4><h5 id="1-大O表示法"><a href="#1-大O表示法" class="headerlink" title="1. 大O表示法"></a>1. 大O表示法</h5><p>大O表示法（Big-O Notation）描述了算法在最坏情况下的增长趋势：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">func</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; i &lt; n; i++)<br>        std::cout&lt;&lt;i;<br>&#125;<br></code></pre></td></tr></table></figure><p>这个例子的时间复杂度就是O(n)</p><h5 id="2-常见时间复杂度对比"><a href="#2-常见时间复杂度对比" class="headerlink" title="2. 常见时间复杂度对比"></a>2. 常见时间复杂度对比</h5><table><thead><tr><th align="left">复杂度</th><th align="left">名称</th><th align="left">示例</th><th align="left">n&#x3D;100时的操作次数</th></tr></thead><tbody><tr><td align="left">O(1)</td><td align="left">常数时间</td><td align="left">哈希表查找</td><td align="left">1</td></tr><tr><td align="left">O(log n)</td><td align="left">对数时间</td><td align="left">二分查找</td><td align="left">~7</td></tr><tr><td align="left">O(n)</td><td align="left">线性时间</td><td align="left">遍历数组</td><td align="left">100</td></tr><tr><td align="left">O(n log n)</td><td align="left">线性对数时间</td><td align="left">快速排序</td><td align="left">~664</td></tr><tr><td align="left">O(n²)</td><td align="left">平方时间</td><td align="left">冒泡排序</td><td align="left">10,000</td></tr><tr><td align="left">O(2ⁿ)</td><td align="left">指数时间</td><td align="left">穷举算法</td><td align="left">1.26e+30</td></tr></tbody></table><h5 id="3-计算规则"><a href="#3-计算规则" class="headerlink" title="3. 计算规则"></a>3. 计算规则</h5><ul><li><strong>加法规则</strong>：T(n) &#x3D; T1(n) + T2(n) → O(max(f(n), g(n)))</li><li><strong>乘法规则</strong>：T(n) &#x3D; T1(n) * T2(n) → O(f(n) * g(n))</li></ul><h4 id="空间复杂度分析"><a href="#空间复杂度分析" class="headerlink" title="空间复杂度分析"></a>空间复杂度分析</h4><h5 id="1-计算方法"><a href="#1-计算方法" class="headerlink" title="1. 计算方法"></a>1. 计算方法</h5><p>计算算法运行过程中<strong>额外</strong>占用的存储空间：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># O(n)空间复杂度示例</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_array</span>(<span class="hljs-params">n</span>):<br>    <span class="hljs-keyword">return</span> [<span class="hljs-number">0</span>] * n  <span class="hljs-comment"># 需要分配n个元素的存储空间</span><br></code></pre></td></tr></table></figure><h3 id="2-常见空间复杂度"><a href="#2-常见空间复杂度" class="headerlink" title="2. 常见空间复杂度"></a>2. 常见空间复杂度</h3><table><thead><tr><th align="left">复杂度</th><th align="left">说明</th><th align="left">典型算法</th></tr></thead><tbody><tr><td align="left">O(1)</td><td align="left">固定大小的额外空间</td><td align="left">迭代算法</td></tr><tr><td align="left">O(n)</td><td align="left">与输入规模线性相关</td><td align="left">归并排序</td></tr><tr><td align="left">O(n²)</td><td align="left">二维数据结构</td><td align="left">邻接矩阵存储图</td></tr></tbody></table><h4 id="实际案例"><a href="#实际案例" class="headerlink" title="实际案例"></a>实际案例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 递归实现（时间复杂度O(2ⁿ)，空间复杂度O(n)）</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fib_recursive</span>(<span class="hljs-params">n</span>):<br>    <span class="hljs-keyword">if</span> n &lt;= <span class="hljs-number">1</span>:<br>        <span class="hljs-keyword">return</span> n<br>    <span class="hljs-keyword">return</span> fib_recursive(n-<span class="hljs-number">1</span>) + fib_recursive(n-<span class="hljs-number">2</span>)<br><br><span class="hljs-comment"># 迭代实现（时间复杂度O(n)，空间复杂度O(1)）</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fib_iterative</span>(<span class="hljs-params">n</span>):<br>    a, b = <span class="hljs-number">0</span>, <span class="hljs-number">1</span><br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):<br>        a, b = b, a + b<br>    <span class="hljs-keyword">return</span> a<br></code></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据结构 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 时间复杂度 </tag>
+            
+            <tag> 空间复杂度 </tag>
+            
+            <tag> 算法基础 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
   
   
 </search>
