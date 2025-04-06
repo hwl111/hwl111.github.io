@@ -31,6 +31,33 @@
     
     
     <entry>
+      <title>C++内存池</title>
+      <link href="/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/%E5%86%85%E5%AD%98%E6%B1%A0%E9%A1%B9%E7%9B%AE/"/>
+      <url>/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/%E5%86%85%E5%AD%98%E6%B1%A0%E9%A1%B9%E7%9B%AE/</url>
+      
+        <content type="html"><![CDATA[<h3 id="内存池介绍"><a href="#内存池介绍" class="headerlink" title="内存池介绍"></a>内存池介绍</h3><h4 id="什么是内存池"><a href="#什么是内存池" class="headerlink" title="什么是内存池"></a>什么是内存池</h4><p><strong>内存池是一种预分配内存并且进行重复利用的技术</strong>，通过减少频繁的动态内存分配与释放操作，从而提高程序的运行效率。内存池通常预先分配一块大的区域，将其划分为多个小块，每次需要分配内存时直接从这块区域分配，而不是调用系统的动态分配函数（如new或者malloc）。简单来说就是申请一块较大的内存块（不够就继续申请），之后将这块内存的管理放在应用层执行，减少系统调用带来的开销。</p><h4 id="为什么要做内存池"><a href="#为什么要做内存池" class="headerlink" title="为什么要做内存池"></a>为什么要做内存池</h4><h5 id="性能优化："><a href="#性能优化：" class="headerlink" title="性能优化："></a>性能优化：</h5><ul><li><p><strong>减少动态内存分配的开销</strong>：系统调用malloc&#x2F;new和free&#x2F;delete涉及复杂的内存管理操作（如内存查找、碎片整理），导致性能较低，而内存池通过预分配和简单的管理逻辑显著提高了分配和释放的效率。</p></li><li><p><strong>避免内存碎片</strong>：动态分配内存会产生内存碎片，尤其在大量小对象频繁分配和释放的场景中，导致的后果就是：当程序长时间运行时，由于所申请的内存块的大小不定，频繁使用时会造成大量的内存碎片从而降低程序和操作系统的性能。内存池通过管理固定大小的内存块，可以有效避免碎片化。</p></li><li><p><strong>降低系统调用频率</strong>：系统级内存分配（如malloc）需要进入内核态，频繁调用会有较高的性能开销。内存池通过减少系统调用频率提高程序效率。</p></li></ul><h5 id="确定性（实时性）："><a href="#确定性（实时性）：" class="headerlink" title="确定性（实时性）："></a>确定性（实时性）：</h5><ul><li><strong>稳定的分配时间</strong>：使用内存池可以使分配和释放操作的耗时更加可控和稳定，适合实时性有严格要求的系统。</li></ul><h4 id="内存池的应用场景："><a href="#内存池的应用场景：" class="headerlink" title="内存池的应用场景："></a>内存池的应用场景：</h4><h5 id="高频小对象分配："><a href="#高频小对象分配：" class="headerlink" title="高频小对象分配："></a>高频小对象分配：</h5><ul><li><p><strong>游戏开发</strong>：游戏中大量小对象（如粒子、子弹、NPC）的动态分配和释放非常频繁，使用内存池可以显著优化性能。</p></li><li><p><strong>网络编程</strong>：网络编程中，大量请求和响应对象（如消息报文）和频繁创建和销毁非常适合使用内存池。</p></li><li><p><strong>内存管理库</strong>：一些容器或数据结构（如std::vector或std::deque）在内部可能使用内存池来优化分配性能。</p></li></ul><h5 id="实时系统："><a href="#实时系统：" class="headerlink" title="实时系统："></a>实时系统：</h5><ul><li>嵌入式设备或实时控制系统中，动态内存分配的延迟可能影响实时性，内存池提供确定性的分配性能。</li></ul><h5 id="高性能计算："><a href="#高性能计算：" class="headerlink" title="高性能计算："></a>高性能计算：</h5><ul><li>在高性能计算程序中，频繁地内存分配和释放会拖累整个程序的性能，内存池可以优化内存管理</li></ul><h5 id="服务器开发："><a href="#服务器开发：" class="headerlink" title="服务器开发："></a>服务器开发：</h5><ul><li>数据库服务器、web服务器等需要管理大量连接和请求，这些连接涉及大量内存分配，内存池能有效提升服务器性能。</li></ul><h4 id="内存池在代码中的应用"><a href="#内存池在代码中的应用" class="headerlink" title="内存池在代码中的应用"></a>内存池在代码中的应用</h4><ul><li><p>对new&#x2F;malloc&#x2F;delete&#x2F;free等动态开辟内存的系统调用进行替换</p></li><li><p>对STL众多容器中的空间配置器std::allocator进行替换</p></li></ul><h4 id="内存池的缺点"><a href="#内存池的缺点" class="headerlink" title="内存池的缺点"></a>内存池的缺点</h4><ul><li><p><strong>初始内存占用</strong>：内存池需要预先分配较大的内存区域，可能浪费一些内存。</p></li><li><p><strong>复杂性</strong>：实现和调试内存池代码比直接使用 malloc &#x2F; new 更复杂。</p></li><li><p><strong>不适合大型对象</strong>：对于大对象的分配可能并不划算。</p></li></ul><h3 id="项目框架"><a href="#项目框架" class="headerlink" title="项目框架"></a>项目框架</h3><p>内存池本质：预先向系统申请一大片内存，并交由应用层管理，在程序运行时，内存的分配和回收都由应用层的内存池处理，从而减少系统调用。</p><p>该项目实现的是基于<strong>哈希映射的多种定长内存分配器（内存池中的一种）</strong>：</p><img src="../img/内存池示意图.jpg" alt="内存池示意图" style="width: 50%;"><p>主要框架如上图所示，主要是维护一个哈希桶 MemoryPools，里面每项对应一个内存池 MemoryPool，哈希桶中每个内存池的块大小 BlockSize 是相同的（4096字节，可以设置为不同），但是每个内存池里每个块分割的大小（槽大小）SlotSize是不同的，依次为8,16,32,…,512字节（<strong>需要的内存超过512字节就用new&#x2F;malloc</strong>），用户申请不同大小的内存就通过哈希桶的映射找到相应（槽大小）  SlotSize 的内存池向其申请，比如用户分别申请8字节和12字节的内存，则经过哈希函数的计算找到槽大小为8字节的内存池和槽大小为16字节（哈希函数向上取整，因为分配给用户的内存块只能大不能小）的内存池分别分配内存给用户，这样设置的好处是<strong>可以保证内存碎片在可控范围内</strong>。</p><p><strong>为什么用户申请超过512字节的内存就直接调用 new&#x2F;malloc 等系统调用？</strong></p><p><strong>因为内存池主要解决的是 小内存带来的内存碎片问题 和 小内存频繁申请释放带来的性能问题。</strong>（频繁申请小内存带来的问题可参考：<a href="https://blog.csdn.net/LF_2016/article/details/53511648">https://blog.csdn.net/LF_2016/article/details/53511648</a>）</p><p>每个内存池的内部结构图：</p><img src="../img/内存池示意图2.jpg" alt="内存池示意图" style="width: 50%;"><ul><li><strong>Slot currentBlock</strong>：内存池实际上是一个一个的 Block 以链表的形式连接起来，每一个 Block 是一块大的内存，当内存池的内存不足的时候，就会向操作系统申请新的 block 加入链表。</li><li><strong>Slot freeSlot</strong>：链表里面的每一项都是对象被释放后归还给内存池的空间，内存池刚创建时 freeSlot 是空的。用户创建对象，将对象释放时，把内存归还给内存池，此时内存池不会将内存归还给系统（delete&#x2F;free），而是把指向这个对象的内存的指针加到 freeSlot 链表的前面（前插），之后用户每次申请内存时，memoryPool就先在这个 freeSlot 链表里面找。</li><li><strong>Slot curretSlot</strong>：用户在创建对象的时候，先检查 freeSlot 是否为空，不为空的时候直接取出一项作为分配出的空间。否则就在当前 Block 将 currentSlot 所指的内存分配出去，如果 Block 里面的内存已经使用完，就向操作系统申请一个新的 Block。</li></ul><p><strong>整体流程图</strong></p><img src="../img/内存池示意图3.jpg" alt="内存池示意图" style="width: 50%;"><p>该项目对外提供了两个重要的接口newElement和deleteElement，分别是向内存池申请内存和将申请的内存进行回收操作。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T, <span class="hljs-keyword">typename</span>... Args&gt;</span><br><span class="hljs-function">T* <span class="hljs-title">newElement</span><span class="hljs-params">(Args&amp;&amp;... args)</span></span>;<br></code></pre></td></tr></table></figure><p>用户在构造对象T的时候通过调用newElement<T>()方法申请内存，newElement<T>()方法计算出元素T的大小后传入哈希桶中，哈希桶中根据哈希映射选择相应槽大小的内存池去分配内存返回（分配内存时优先使用FreeList_里的空闲内存槽，其次再找curSlot_，如果curSlot_大于等于lastSot_，则重新申请一块内存块来分配内存槽），newElement函数获得内存之后，在该内存上构造对象T后将地址返回给用户。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">deleteElement</span><span class="hljs-params">(T* p)</span></span>;<br></code></pre></td></tr></table></figure><p>当用户想要释放对象时可调用deleteElement函数，该方法首先调用对象T的析构函数，其次同样经过哈希映射找到相应的内存池去把内存槽加入到FreeList_中。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 个人项目 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> C++ </tag>
+            
+            <tag> 内存池 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>用C++实现终端版俄罗斯方块：从零开始的游戏开发指南</title>
       <link href="/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/%E6%8E%A7%E5%88%B6%E5%8F%B0%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97/"/>
       <url>/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/%E6%8E%A7%E5%88%B6%E5%8F%B0%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97/</url>
