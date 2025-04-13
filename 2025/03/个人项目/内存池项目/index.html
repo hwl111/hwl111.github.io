@@ -26,16 +26,16 @@
 <meta property="og:site_name" content="Infinite Loop">
 <meta property="og:description" content="内存池介绍什么是内存池内存池是一种预分配内存并且进行重复利用的技术，通过减少频繁的动态内存分配与释放操作，从而提高程序的运行效率。内存池通常预先分配一块大的区域，将其划分为多个小块，每次需要分配内存时直接从这块区域分配，而不是调用系统的动态分配函数（如new或者malloc）。简单来说就是申请一块较大的内存块（不够就继续申请），之后将这块内存的管理放在应用层执行，减少系统调用带来的开销。 为什么要">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/%E5%86%85%E5%AD%98%E6%B1%A0%E7%A4%BA%E6%84%8F%E5%9B%BE.jpg">
-<meta property="og:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/%E5%86%85%E5%AD%98%E6%B1%A0%E7%A4%BA%E6%84%8F%E5%9B%BE2.jpg">
-<meta property="og:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/%E5%86%85%E5%AD%98%E6%B1%A0%E7%A4%BA%E6%84%8F%E5%9B%BE3.jpg">
+<meta property="og:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/1.jpg">
+<meta property="og:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/2.jpg">
+<meta property="og:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/3.jpg">
 <meta property="article:published_time" content="2025-03-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-04-06T06:32:54.925Z">
+<meta property="article:modified_time" content="2025-04-13T02:46:20.790Z">
 <meta property="article:author" content="hwl">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="内存池">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/%E5%86%85%E5%AD%98%E6%B1%A0%E7%A4%BA%E6%84%8F%E5%9B%BE.jpg">
+<meta name="twitter:image" content="https://hwl111.github.io/2025/03/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/img/1.jpg">
   
   
   
@@ -348,13 +348,13 @@
 </ul>
 <h3 id="项目框架"><a href="#项目框架" class="headerlink" title="项目框架"></a>项目框架</h3><p>内存池本质：预先向系统申请一大片内存，并交由应用层管理，在程序运行时，内存的分配和回收都由应用层的内存池处理，从而减少系统调用。</p>
 <p>该项目实现的是基于<strong>哈希映射的多种定长内存分配器（内存池中的一种）</strong>：</p>
-<img src="../img/内存池示意图.jpg" srcset="/img/loading.gif" lazyload alt="内存池示意图" style="width: 50%;">
+<img src="../img/1.jpg" srcset="/img/loading.gif" lazyload alt="内存池示意图" style="width: 50%;">
 
 <p>主要框架如上图所示，主要是维护一个哈希桶 MemoryPools，里面每项对应一个内存池 MemoryPool，哈希桶中每个内存池的块大小 BlockSize 是相同的（4096字节，可以设置为不同），但是每个内存池里每个块分割的大小（槽大小）SlotSize是不同的，依次为8,16,32,…,512字节（<strong>需要的内存超过512字节就用new&#x2F;malloc</strong>），用户申请不同大小的内存就通过哈希桶的映射找到相应（槽大小）  SlotSize 的内存池向其申请，比如用户分别申请8字节和12字节的内存，则经过哈希函数的计算找到槽大小为8字节的内存池和槽大小为16字节（哈希函数向上取整，因为分配给用户的内存块只能大不能小）的内存池分别分配内存给用户，这样设置的好处是<strong>可以保证内存碎片在可控范围内</strong>。</p>
 <p><strong>为什么用户申请超过512字节的内存就直接调用 new&#x2F;malloc 等系统调用？</strong></p>
 <p><strong>因为内存池主要解决的是 小内存带来的内存碎片问题 和 小内存频繁申请释放带来的性能问题。</strong>（频繁申请小内存带来的问题可参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/LF_2016/article/details/53511648">https://blog.csdn.net/LF_2016/article/details/53511648</a>）</p>
 <p>每个内存池的内部结构图：</p>
-<img src="../img/内存池示意图2.jpg" srcset="/img/loading.gif" lazyload alt="内存池示意图" style="width: 50%;">
+<img src="../img/2.jpg" srcset="/img/loading.gif" lazyload alt="内存池示意图" style="width: 50%;">
 
 <ul>
 <li><strong>Slot currentBlock</strong>：内存池实际上是一个一个的 Block 以链表的形式连接起来，每一个 Block 是一块大的内存，当内存池的内存不足的时候，就会向操作系统申请新的 block 加入链表。</li>
@@ -362,7 +362,7 @@
 <li><strong>Slot curretSlot</strong>：用户在创建对象的时候，先检查 freeSlot 是否为空，不为空的时候直接取出一项作为分配出的空间。否则就在当前 Block 将 currentSlot 所指的内存分配出去，如果 Block 里面的内存已经使用完，就向操作系统申请一个新的 Block。</li>
 </ul>
 <p><strong>整体流程图</strong></p>
-<img src="../img/内存池示意图3.jpg" srcset="/img/loading.gif" lazyload alt="内存池示意图" style="width: 50%;">
+<img src="../img/3.jpg" srcset="/img/loading.gif" lazyload alt="内存池示意图" style="width: 50%;">
 
 <p>该项目对外提供了两个重要的接口newElement和deleteElement，分别是向内存池申请内存和将申请的内存进行回收操作。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T, <span class="hljs-keyword">typename</span>... Args&gt;</span><br><span class="hljs-function">T* <span class="hljs-title">newElement</span><span class="hljs-params">(Args&amp;&amp;... args)</span></span>;<br></code></pre></td></tr></table></figure>
