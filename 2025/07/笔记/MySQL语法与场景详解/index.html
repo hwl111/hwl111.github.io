@@ -1,0 +1,1028 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MySQL语法与场景详解本文系统梳理 MySQL 进阶语法与特定业务场景下的典型用法，适合进阶查阅和实战参考。  一、进阶DDL（数据定义）1. 分区表12345678CREATE TABLE orders (  id BIGINT PRIMARY KEY,  user_id INT,  order_time DATETIME) PARTITION BY RANGE (YEAR(order_tim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL语法与场景详解">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E7%AC%94%E8%AE%B0/MySQL%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="MySQL语法与场景详解本文系统梳理 MySQL 进阶语法与特定业务场景下的典型用法，适合进阶查阅和实战参考。  一、进阶DDL（数据定义）1. 分区表12345678CREATE TABLE orders (  id BIGINT PRIMARY KEY,  user_id INT,  order_time DATETIME) PARTITION BY RANGE (YEAR(order_tim">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-16T16:00:00.000Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MySQL语法与场景详解 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL语法与场景详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-17 00:00" pubdate>
+          2025年7月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MySQL语法与场景详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MySQL语法与场景详解"><a href="#MySQL语法与场景详解" class="headerlink" title="MySQL语法与场景详解"></a>MySQL语法与场景详解</h1><p>本文系统梳理 MySQL 进阶语法与特定业务场景下的典型用法，适合进阶查阅和实战参考。</p>
+<hr>
+<h2 id="一、进阶DDL（数据定义）"><a href="#一、进阶DDL（数据定义）" class="headerlink" title="一、进阶DDL（数据定义）"></a>一、进阶DDL（数据定义）</h2><h3 id="1-分区表"><a href="#1-分区表" class="headerlink" title="1. 分区表"></a>1. 分区表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> orders (<br>  id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">PRIMARY KEY</span>,<br>  user_id <span class="hljs-type">INT</span>,<br>  order_time DATETIME<br>) <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">RANGE</span> (<span class="hljs-keyword">YEAR</span>(order_time)) (<br>  <span class="hljs-keyword">PARTITION</span> p2023 <span class="hljs-keyword">VALUES</span> LESS THAN (<span class="hljs-number">2024</span>),<br>  <span class="hljs-keyword">PARTITION</span> p2024 <span class="hljs-keyword">VALUES</span> LESS THAN (<span class="hljs-number">2025</span>)<br>);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：大表按时间分区，提升查询和归档效率。</li>
+</ul>
+<h3 id="2-外键约束"><a href="#2-外键约束" class="headerlink" title="2. 外键约束"></a>2. 外键约束</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> users (<br>  id <span class="hljs-type">INT</span> <span class="hljs-keyword">PRIMARY KEY</span><br>);<br><span class="hljs-keyword">CREATE TABLE</span> orders (<br>  id <span class="hljs-type">INT</span> <span class="hljs-keyword">PRIMARY KEY</span>,<br>  user_id <span class="hljs-type">INT</span>,<br>  <span class="hljs-keyword">FOREIGN KEY</span> (user_id) <span class="hljs-keyword">REFERENCES</span> users(id)<br>);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：保证数据一致性，如订单必须有合法用户。</li>
+</ul>
+<h3 id="3-视图"><a href="#3-视图" class="headerlink" title="3. 视图"></a>3. 视图</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">VIEW</span> active_users <span class="hljs-keyword">AS</span> <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;active&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：简化复杂查询、权限隔离。</li>
+</ul>
+<h3 id="4-触发器"><a href="#4-触发器" class="headerlink" title="4. 触发器"></a>4. 触发器</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TRIGGER</span> before_insert_order<br>BEFORE <span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">ON</span> orders<br><span class="hljs-keyword">FOR</span> <span class="hljs-keyword">EACH</span> <span class="hljs-type">ROW</span> <span class="hljs-keyword">SET</span> NEW.create_time <span class="hljs-operator">=</span> NOW();<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：自动填充字段、审计、数据同步。</li>
+</ul>
+<h3 id="5-存储过程与函数"><a href="#5-存储过程与函数" class="headerlink" title="5. 存储过程与函数"></a>5. 存储过程与函数</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql">DELIMITER <span class="hljs-operator">/</span><span class="hljs-operator">/</span><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">PROCEDURE</span> add_user(<span class="hljs-keyword">IN</span> uname <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">20</span>))<br><span class="hljs-keyword">BEGIN</span><br>  <span class="hljs-keyword">INSERT INTO</span> users(name) <span class="hljs-keyword">VALUES</span>(uname);<br><span class="hljs-keyword">END</span><span class="hljs-operator">/</span><span class="hljs-operator">/</span><br>DELIMITER ;<br><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> get_order_count(uid <span class="hljs-type">INT</span>) <span class="hljs-keyword">RETURNS</span> <span class="hljs-type">INT</span><br><span class="hljs-keyword">RETURN</span> (<span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id<span class="hljs-operator">=</span>uid);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：封装业务逻辑、批量处理、复杂计算。</li>
+</ul>
+<h3 id="6-事件调度器"><a href="#6-事件调度器" class="headerlink" title="6. 事件调度器"></a>6. 事件调度器</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> EVENT archive_orders<br><span class="hljs-keyword">ON</span> SCHEDULE <span class="hljs-keyword">EVERY</span> <span class="hljs-number">1</span> <span class="hljs-keyword">DAY</span><br>DO<br>  <span class="hljs-keyword">INSERT INTO</span> orders_archive <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> order_time <span class="hljs-operator">&lt;</span> CURDATE();<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：定时归档、自动清理。</li>
+</ul>
+<h3 id="7-用户与权限"><a href="#7-用户与权限" class="headerlink" title="7. 用户与权限"></a>7. 用户与权限</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">USER</span> <span class="hljs-string">&#x27;report&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> IDENTIFIED <span class="hljs-keyword">BY</span> <span class="hljs-string">&#x27;123456&#x27;</span>;<br><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">ON</span> db.<span class="hljs-operator">*</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">&#x27;report&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span>;<br><span class="hljs-keyword">REVOKE</span> <span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">ON</span> db.orders <span class="hljs-keyword">FROM</span> <span class="hljs-string">&#x27;report&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：权限最小化、数据安全。</li>
+</ul>
+<hr>
+<h2 id="二、复杂DML与查询"><a href="#二、复杂DML与查询" class="headerlink" title="二、复杂DML与查询"></a>二、复杂DML与查询</h2><h3 id="1-多表插入"><a href="#1-多表插入" class="headerlink" title="1. 多表插入"></a>1. 多表插入</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT INTO</span> orders (id, user_id) <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, <span class="hljs-number">100</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">101</span>);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：批量导入、数据迁移。</li>
+</ul>
+<h3 id="2-批量更新"><a href="#2-批量更新" class="headerlink" title="2. 批量更新"></a>2. 批量更新</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">UPDATE</span> users <span class="hljs-keyword">SET</span> status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;inactive&#x27;</span> <span class="hljs-keyword">WHERE</span> last_login <span class="hljs-operator">&lt;</span> <span class="hljs-string">&#x27;2024-01-01&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：批量冻结、批量修正。</li>
+</ul>
+<h3 id="3-子查询与联合查询"><a href="#3-子查询与联合查询" class="headerlink" title="3. 子查询与联合查询"></a>3. 子查询与联合查询</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-keyword">IN</span> (<span class="hljs-keyword">SELECT</span> id <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;active&#x27;</span>);<br><span class="hljs-keyword">SELECT</span> u.name, o.id <span class="hljs-keyword">FROM</span> users u <span class="hljs-keyword">JOIN</span> orders o <span class="hljs-keyword">ON</span> u.id <span class="hljs-operator">=</span> o.user_id;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：复杂筛选、数据整合。</li>
+</ul>
+<h3 id="4-窗口函数"><a href="#4-窗口函数" class="headerlink" title="4. 窗口函数"></a>4. 窗口函数</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> id, score, <span class="hljs-built_in">RANK</span>() <span class="hljs-keyword">OVER</span> (<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> score <span class="hljs-keyword">DESC</span>) <span class="hljs-keyword">AS</span> r <span class="hljs-keyword">FROM</span> exam;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：排行榜、分组内排序、累计统计。</li>
+</ul>
+<h3 id="5-分组统计与条件聚合"><a href="#5-分组统计与条件聚合" class="headerlink" title="5. 分组统计与条件聚合"></a>5. 分组统计与条件聚合</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> user_id, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> cnt, <span class="hljs-built_in">SUM</span>(amount) <span class="hljs-keyword">AS</span> total <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> user_id <span class="hljs-keyword">HAVING</span> cnt <span class="hljs-operator">&gt;</span> <span class="hljs-number">5</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：用户活跃度、销售统计。</li>
+</ul>
+<hr>
+<h2 id="三、事务与锁的细节"><a href="#三、事务与锁的细节" class="headerlink" title="三、事务与锁的细节"></a>三、事务与锁的细节</h2><h3 id="1-事务隔离级别"><a href="#1-事务隔离级别" class="headerlink" title="1. 事务隔离级别"></a>1. 事务隔离级别</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：防止脏读、不可重复读、幻读。</li>
+</ul>
+<h3 id="2-显式事务控制"><a href="#2-显式事务控制" class="headerlink" title="2. 显式事务控制"></a>2. 显式事务控制</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">START</span> TRANSACTION;<br><span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">-</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">+</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><span class="hljs-keyword">COMMIT</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：转账、订单支付。</li>
+</ul>
+<h3 id="3-行锁与表锁"><a href="#3-行锁与表锁" class="headerlink" title="3. 行锁与表锁"></a>3. 行锁与表锁</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-number">1</span> <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span>;<br>LOCK TABLES orders WRITE;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：并发写入、数据一致性。</li>
+</ul>
+<hr>
+<h2 id="四、优化与调优"><a href="#四、优化与调优" class="headerlink" title="四、优化与调优"></a>四、优化与调优</h2><h3 id="1-索引设计"><a href="#1-索引设计" class="headerlink" title="1. 索引设计"></a>1. 索引设计</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> INDEX idx_user_time <span class="hljs-keyword">ON</span> orders(user_id, order_time <span class="hljs-keyword">DESC</span>);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：高频查询、联合过滤。</li>
+</ul>
+<h3 id="2-执行计划分析"><a href="#2-执行计划分析" class="headerlink" title="2. 执行计划分析"></a>2. 执行计划分析</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">EXPLAIN <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id<span class="hljs-operator">=</span><span class="hljs-number">100</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> order_time <span class="hljs-keyword">DESC</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：SQL调优、索引命中。</li>
+</ul>
+<h3 id="3-慢查询日志"><a href="#3-慢查询日志" class="headerlink" title="3. 慢查询日志"></a>3. 慢查询日志</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> slow_query_log <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><span class="hljs-keyword">SHOW</span> VARIABLES <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;slow_query_log%&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>场景</strong>：定位性能瓶颈。</li>
+</ul>
+<h3 id="4-分区、分库分表"><a href="#4-分区、分库分表" class="headerlink" title="4. 分区、分库分表"></a>4. 分区、分库分表</h3><ul>
+<li><strong>分区</strong>：见前文DDL</li>
+<li><strong>分库分表</strong>：通过中间件（如ShardingSphere、MyCat）或应用层实现。</li>
+<li><strong>场景</strong>：大数据量、分布式扩展。</li>
+</ul>
+<hr>
+<h2 id="五、特定场景示例"><a href="#五、特定场景示例" class="headerlink" title="五、特定场景示例"></a>五、特定场景示例</h2><h3 id="1-电商订单表设计"><a href="#1-电商订单表设计" class="headerlink" title="1. 电商订单表设计"></a>1. 电商订单表设计</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> orders (<br>  id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">PRIMARY KEY</span>,<br>  user_id <span class="hljs-type">INT</span>,<br>  product_id <span class="hljs-type">INT</span>,<br>  amount <span class="hljs-type">DECIMAL</span>(<span class="hljs-number">10</span>,<span class="hljs-number">2</span>),<br>  status ENUM(<span class="hljs-string">&#x27;pending&#x27;</span>,<span class="hljs-string">&#x27;paid&#x27;</span>,<span class="hljs-string">&#x27;shipped&#x27;</span>,<span class="hljs-string">&#x27;done&#x27;</span>,<span class="hljs-string">&#x27;closed&#x27;</span>),<br>  create_time DATETIME,<br>  INDEX idx_user_time(user_id, create_time)<br>) <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">RANGE</span> (<span class="hljs-keyword">YEAR</span>(create_time)) (<br>  <span class="hljs-keyword">PARTITION</span> p2023 <span class="hljs-keyword">VALUES</span> LESS THAN (<span class="hljs-number">2024</span>),<br>  <span class="hljs-keyword">PARTITION</span> p2024 <span class="hljs-keyword">VALUES</span> LESS THAN (<span class="hljs-number">2025</span>)<br>);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>说明</strong>：支持高并发、分区归档、状态流转。</li>
+</ul>
+<h3 id="2-日志归档与冷热分离"><a href="#2-日志归档与冷热分离" class="headerlink" title="2. 日志归档与冷热分离"></a>2. 日志归档与冷热分离</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> logs (<br>  id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">PRIMARY KEY</span>,<br>  log_time DATETIME,<br>  content TEXT<br>) <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">RANGE</span> (TO_DAYS(log_time)) (<br>  <span class="hljs-keyword">PARTITION</span> p0 <span class="hljs-keyword">VALUES</span> LESS THAN (TO_DAYS(<span class="hljs-string">&#x27;2024-01-01&#x27;</span>)),<br>  <span class="hljs-keyword">PARTITION</span> p1 <span class="hljs-keyword">VALUES</span> LESS THAN (TO_DAYS(<span class="hljs-string">&#x27;2025-01-01&#x27;</span>))<br>);<br><span class="hljs-comment">-- 定期归档到历史表</span><br><span class="hljs-keyword">INSERT INTO</span> logs_history <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> logs <span class="hljs-keyword">WHERE</span> log_time <span class="hljs-operator">&lt;</span> <span class="hljs-string">&#x27;2024-01-01&#x27;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>说明</strong>：提升查询效率，便于数据治理。</li>
+</ul>
+<h3 id="3-排行榜与窗口函数"><a href="#3-排行榜与窗口函数" class="headerlink" title="3. 排行榜与窗口函数"></a>3. 排行榜与窗口函数</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> user_id, score, <span class="hljs-built_in">RANK</span>() <span class="hljs-keyword">OVER</span> (<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> score <span class="hljs-keyword">DESC</span>) <span class="hljs-keyword">AS</span> rank <span class="hljs-keyword">FROM</span> user_score;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>说明</strong>：高效实现实时排行榜。</li>
+</ul>
+<h3 id="4-分布式ID生成"><a href="#4-分布式ID生成" class="headerlink" title="4. 分布式ID生成"></a>4. 分布式ID生成</h3><ul>
+<li><strong>方案</strong>：雪花算法（Snowflake）、UUID、数据库自增、Redis分布式ID。<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- MySQL自增ID</span><br>id <span class="hljs-type">BIGINT</span> AUTO_INCREMENT <span class="hljs-keyword">PRIMARY KEY</span><br><span class="hljs-comment">-- UUID</span><br>id <span class="hljs-type">CHAR</span>(<span class="hljs-number">36</span>) <span class="hljs-keyword">PRIMARY KEY</span> <span class="hljs-keyword">DEFAULT</span> (UUID())<br></code></pre></td></tr></table></figure></li>
+<li><strong>说明</strong>：保证全局唯一性，适合分布式系统。</li>
+</ul>
+<h3 id="5-数据脱敏与审计"><a href="#5-数据脱敏与审计" class="headerlink" title="5. 数据脱敏与审计"></a>5. 数据脱敏与审计</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 脱敏视图</span><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">VIEW</span> v_user_masked <span class="hljs-keyword">AS</span> <span class="hljs-keyword">SELECT</span> id, CONCAT(<span class="hljs-keyword">LEFT</span>(phone,<span class="hljs-number">3</span>),<span class="hljs-string">&#x27;****&#x27;</span>,<span class="hljs-keyword">RIGHT</span>(phone,<span class="hljs-number">4</span>)) <span class="hljs-keyword">AS</span> phone <span class="hljs-keyword">FROM</span> users;<br><span class="hljs-comment">-- 审计触发器</span><br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TRIGGER</span> audit_update<br>AFTER <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">ON</span> users<br><span class="hljs-keyword">FOR</span> <span class="hljs-keyword">EACH</span> <span class="hljs-type">ROW</span> <span class="hljs-keyword">INSERT INTO</span> audit_log(user_id, old_val, new_val, op_time) <span class="hljs-keyword">VALUES</span> (OLD.id, OLD.name, NEW.name, NOW());<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>说明</strong>：保护隐私、合规审计。</li>
+</ul>
+<h3 id="6-分布式锁实现（进阶扩展）"><a href="#6-分布式锁实现（进阶扩展）" class="headerlink" title="6. 分布式锁实现（进阶扩展）"></a>6. 分布式锁实现（进阶扩展）</h3><ul>
+<li><strong>原理详解</strong>：分布式锁需满足互斥性、可重入性、容错性、避免死锁、超时自动释放等特性。</li>
+<li><strong>常见问题</strong>：<ul>
+<li>死锁与锁遗失：如客户端异常未释放锁，需设置超时。</li>
+<li>锁粒度设计：锁粒度过大影响并发，过小增加复杂度。</li>
+<li>性能瓶颈：数据库锁适合低QPS场景，高并发建议用Redis等内存型方案。</li>
+</ul>
+</li>
+<li><strong>MySQL方案进阶</strong>：<ul>
+<li><code>GET_LOCK</code>为全局锁，适合小规模场景，支持超时与自动释放。</li>
+<li>表锁方案可结合唯一索引、乐观锁字段（如version）防止并发写入。</li>
+<li>可结合应用层唯一请求ID防止重复提交。</li>
+</ul>
+</li>
+<li><strong>分布式系统结合</strong>：<ul>
+<li>推荐Redis RedLock、ZooKeeper临时节点等高可用方案。</li>
+<li>MySQL锁适合对一致性要求高、并发量不大、已有MySQL依赖的场景。</li>
+</ul>
+</li>
+<li><strong>业务实战案例</strong>：<ul>
+<li>秒杀库存扣减：先加分布式锁，后查库存并扣减，最后释放锁。</li>
+<li>定时任务幂等：多节点定时任务调度时，抢占分布式锁保证单节点执行。</li>
+</ul>
+</li>
+<li><strong>注意事项</strong>：<ul>
+<li>锁超时需合理设置，防止死锁或误释放。</li>
+<li>业务操作应尽量短小，减少锁持有时间。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-全局唯一ID生成（进阶扩展）"><a href="#7-全局唯一ID生成（进阶扩展）" class="headerlink" title="7. 全局唯一ID生成（进阶扩展）"></a>7. 全局唯一ID生成（进阶扩展）</h3><ul>
+<li><strong>原理详解</strong>：全局唯一ID需保证分布式环境下唯一、趋势递增、性能高、无单点。</li>
+<li><strong>常见问题</strong>：<ul>
+<li>UUID无序，影响索引性能；自增ID有单点瓶颈；雪花算法需时钟同步。</li>
+<li>号段模式需预分配，存在ID浪费风险。</li>
+</ul>
+</li>
+<li><strong>最佳实践</strong>：<ul>
+<li>雪花算法适合高并发、分布式场景，ID有序且高性能。</li>
+<li>业务分库分表时，推荐每库&#x2F;每表分配不同ID段或workerId。</li>
+<li>重要业务建议ID生成服务高可用部署，防止单点。</li>
+</ul>
+</li>
+<li><strong>MySQL与分布式结合</strong>：<ul>
+<li>MySQL自增ID适合单库单表，分布式建议配合号段表或外部ID服务。</li>
+<li>号段表可用作本地缓存批量分配，减少数据库压力。</li>
+</ul>
+</li>
+<li><strong>业务实战案例</strong>：<ul>
+<li>电商订单号：可用雪花算法+业务前缀+时间戳拼接。</li>
+<li>日志追踪ID：分布式链路追踪需全局唯一且可溯源。</li>
+</ul>
+</li>
+<li><strong>性能对比</strong>：<ul>
+<li>雪花算法&gt;号段模式&gt;MySQL自增&gt;UUID（按写入性能排序）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="8-数据脱敏与合规（进阶扩展）"><a href="#8-数据脱敏与合规（进阶扩展）" class="headerlink" title="8. 数据脱敏与合规（进阶扩展）"></a>8. 数据脱敏与合规（进阶扩展）</h3><ul>
+<li><strong>原理详解</strong>：数据脱敏分为静态脱敏（存储前处理）和动态脱敏（查询时处理），合规需满足最小权限、可追溯、加密存储等要求。</li>
+<li><strong>常见问题</strong>：<ul>
+<li>脱敏不彻底：如仅做部分掩码，仍可被还原。</li>
+<li>性能影响：动态脱敏&#x2F;加密字段查询性能下降。</li>
+<li>合规盲区：日志、备份、缓存等环节易被忽视。</li>
+</ul>
+</li>
+<li><strong>最佳实践</strong>：<ul>
+<li>敏感字段加密存储，密钥分级管理。</li>
+<li>通过视图&#x2F;中间件实现动态脱敏，按用户角色授权访问。</li>
+<li>审计日志全链路记录敏感数据操作。</li>
+</ul>
+</li>
+<li><strong>MySQL与分布式结合</strong>：<ul>
+<li>分布式环境下需统一脱敏策略，防止数据在同步&#x2F;备份时泄露。</li>
+<li>可结合数据网关、API层做统一脱敏。</li>
+</ul>
+</li>
+<li><strong>业务实战案例</strong>：<ul>
+<li>金融行业：银行卡号、身份证号存储加密，查询脱敏展示。</li>
+<li>医疗行业：患者信息分级脱敏，医生&#x2F;管理员不同权限展示。</li>
+</ul>
+</li>
+<li><strong>注意事项</strong>：<ul>
+<li>密钥管理安全性至关重要。</li>
+<li>定期审计和合规检查，防止数据泄漏。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="六、高可用架构（High-Availability-Architecture）"><a href="#六、高可用架构（High-Availability-Architecture）" class="headerlink" title="六、高可用架构（High Availability Architecture）"></a>六、高可用架构（High Availability Architecture）</h2><h3 id="概念与目的"><a href="#概念与目的" class="headerlink" title="概念与目的"></a>概念与目的</h3><ul>
+<li>高可用架构保障数据库服务持续可用，防止单点故障，支持自动故障切换。</li>
+</ul>
+<h3 id="典型方案"><a href="#典型方案" class="headerlink" title="典型方案"></a>典型方案</h3><ol>
+<li><strong>主从复制（Master-Slave Replication）</strong><ul>
+<li>主库写、从库读，提升读性能，支持手动&#x2F;自动切换。</li>
+<li>配置：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 主库my.cnf</span><br><span class="hljs-attr">server-id</span>=<span class="hljs-number">1</span><br><span class="hljs-attr">log-bin</span>=mysql-bin<br><span class="hljs-comment"># 从库my.cnf</span><br><span class="hljs-attr">server-id</span>=<span class="hljs-number">2</span><br><span class="hljs-attr">relay-log</span>=relay-bin<br><span class="hljs-comment"># 从库执行</span><br>CHANGE MASTER TO <span class="hljs-attr">MASTER_HOST</span>=<span class="hljs-string">&#x27;主库IP&#x27;</span>, MASTER_USER=<span class="hljs-string">&#x27;repl&#x27;</span>, MASTER_PASSWORD=<span class="hljs-string">&#x27;xxx&#x27;</span>, MASTER_LOG_FILE=<span class="hljs-string">&#x27;mysql-bin.000001&#x27;</span>, MASTER_LOG_POS=xxx<span class="hljs-comment">;</span><br>START SLAVE<span class="hljs-comment">;</span><br>SHOW SLAVE STATUS\G<br></code></pre></td></tr></table></figure></li>
+<li><strong>场景</strong>：读写分离、备份、灾备。</li>
+</ul>
+</li>
+<li><strong>MGR（Group Replication）&#x2F;InnoDB Cluster</strong><ul>
+<li>多主自动选主，支持自动故障切换。</li>
+<li>适合高可用和高一致性场景。</li>
+</ul>
+</li>
+<li><strong>ProxySQL&#x2F;Keepalived+VIP</strong><ul>
+<li>通过中间件实现读写分离、负载均衡、自动切换。</li>
+<li><strong>场景</strong>：大规模集群、业务不中断。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="七、分布式事务（Distributed-Transaction）"><a href="#七、分布式事务（Distributed-Transaction）" class="headerlink" title="七、分布式事务（Distributed Transaction）"></a>七、分布式事务（Distributed Transaction）</h2><h3 id="概念与目的-1"><a href="#概念与目的-1" class="headerlink" title="概念与目的"></a>概念与目的</h3><ul>
+<li>分布式事务保障多库&#x2F;多服务间数据一致性。</li>
+<li>典型场景：订单、支付、库存等跨库操作。</li>
+</ul>
+<h3 id="典型方案-1"><a href="#典型方案-1" class="headerlink" title="典型方案"></a>典型方案</h3><ol>
+<li><strong>XA 两阶段提交</strong><ul>
+<li>MySQL原生支持XA协议。</li>
+<li>语法：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql">XA <span class="hljs-keyword">START</span> <span class="hljs-string">&#x27;xid&#x27;</span>;<br><span class="hljs-keyword">INSERT INTO</span> ...;<br>XA <span class="hljs-keyword">END</span> <span class="hljs-string">&#x27;xid&#x27;</span>;<br>XA <span class="hljs-keyword">PREPARE</span> <span class="hljs-string">&#x27;xid&#x27;</span>;<br><span class="hljs-comment">-- 所有分支都PREPARE后</span><br>XA <span class="hljs-keyword">COMMIT</span> <span class="hljs-string">&#x27;xid&#x27;</span>;<br><span class="hljs-comment">-- 或 XA ROLLBACK &#x27;xid&#x27;;</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>场景</strong>：强一致性要求的分布式事务。</li>
+</ul>
+</li>
+<li><strong>TCC（Try-Confirm-Cancel）&#x2F;消息最终一致性</strong><ul>
+<li>通过业务分段、补偿、消息队列等实现最终一致。</li>
+<li>适合高性能、可容忍短暂不一致的业务。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="八、数据同步（Data-Synchronization）"><a href="#八、数据同步（Data-Synchronization）" class="headerlink" title="八、数据同步（Data Synchronization）"></a>八、数据同步（Data Synchronization）</h2><h3 id="概念与目的-2"><a href="#概念与目的-2" class="headerlink" title="概念与目的"></a>概念与目的</h3><ul>
+<li>数据同步保障多库&#x2F;多系统间数据实时或准实时一致。</li>
+<li>典型场景：多活、数据迁移、数据仓库、异构系统集成。</li>
+</ul>
+<h3 id="典型方案-2"><a href="#典型方案-2" class="headerlink" title="典型方案"></a>典型方案</h3><ol>
+<li><strong>主从复制（异步&#x2F;半同步&#x2F;全同步）</strong><ul>
+<li>通过binlog实现数据同步。</li>
+<li>配置见高可用架构。</li>
+</ul>
+</li>
+<li><strong>数据订阅与实时同步</strong><ul>
+<li><strong>Canal</strong>：基于binlog解析，支持MySQL到ES&#x2F;Kafka等。</li>
+<li><strong>Debezium</strong>：支持多种数据库的变更订阅。</li>
+<li><strong>DataX</strong>：批量数据同步工具，适合离线迁移。</li>
+<li><strong>配置示例</strong>：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;job&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;reader&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;mysqlreader&quot;</span><span class="hljs-punctuation">,</span> ...<span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;writer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;mysqlwriter&quot;</span><span class="hljs-punctuation">,</span> ...<span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;setting&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>...<span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>跨地域多活&#x2F;多中心同步</strong><ul>
+<li>结合MGR、GTID、全局时钟等方案。</li>
+</ul>
+</li>
+</ol>
+<h3 id="应用说明"><a href="#应用说明" class="headerlink" title="应用说明"></a>应用说明</h3><ul>
+<li>适用于高可用、灾备、数据集成、数据仓库等多种场景。</li>
+</ul>
+<hr>
+<p>如需更深入的专题（如分布式锁、全局唯一ID、数据脱敏合规等），欢迎留言补充！ </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#数据库</a>
+      
+        <a href="/tags/MySQL/" class="print-no-link">#MySQL</a>
+      
+        <a href="/tags/SQL/" class="print-no-link">#SQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL语法与场景详解</div>
+      <div>https://hwl111.github.io/2025/07/笔记/MySQL语法与场景详解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/11_B%E6%A0%91%E4%B8%8EB+%E6%A0%91%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/" title="B树与B+树详解与C++实现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">B树与B+树详解与C++实现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/Python%E5%B8%B8%E7%94%A8%E5%BA%93%E7%94%A8%E6%B3%95/" title="Python常用库用法">
+                        <span class="hidden-mobile">Python常用库用法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

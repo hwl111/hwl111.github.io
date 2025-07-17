@@ -1,0 +1,834 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="栈详解与C++实现1. 栈概念（详细）栈（Stack）是一种后进先出（LIFO）的数据结构，只允许在一端进行插入和删除操作。  后进先出：最后入栈的元素最先出栈。 顺序实现：用数组&#x2F;向量实现，栈顶指针指向当前元素。 链式实现：用链表实现，头部为栈顶。 常见操作：push（入栈）、pop（出栈）、top（取栈顶）、empty（判空）、size（元素个数）。 优点： 操作简单，O(1)时间复">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈详解与C++实现">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/03_%E6%A0%88%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="栈详解与C++实现1. 栈概念（详细）栈（Stack）是一种后进先出（LIFO）的数据结构，只允许在一端进行插入和删除操作。  后进先出：最后入栈的元素最先出栈。 顺序实现：用数组&#x2F;向量实现，栈顶指针指向当前元素。 链式实现：用链表实现，头部为栈顶。 常见操作：push（入栈）、pop（出栈）、top（取栈顶）、empty（判空）、size（元素个数）。 优点： 操作简单，O(1)时间复">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-17T11:41:40.880Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="栈">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>栈详解与C++实现 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="栈详解与C++实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-17 00:00" pubdate>
+          2025年7月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">栈详解与C++实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="栈详解与C-实现"><a href="#栈详解与C-实现" class="headerlink" title="栈详解与C++实现"></a>栈详解与C++实现</h1><h2 id="1-栈概念（详细）"><a href="#1-栈概念（详细）" class="headerlink" title="1. 栈概念（详细）"></a>1. 栈概念（详细）</h2><p>栈（Stack）是一种<strong>后进先出（LIFO）</strong>的数据结构，只允许在一端进行插入和删除操作。</p>
+<ul>
+<li><strong>后进先出</strong>：最后入栈的元素最先出栈。</li>
+<li><strong>顺序实现</strong>：用数组&#x2F;向量实现，栈顶指针指向当前元素。</li>
+<li><strong>链式实现</strong>：用链表实现，头部为栈顶。</li>
+<li><strong>常见操作</strong>：push（入栈）、pop（出栈）、top（取栈顶）、empty（判空）、size（元素个数）。</li>
+<li><strong>优点</strong>：<ul>
+<li>操作简单，O(1)时间复杂度。</li>
+<li>适合递归、回溯、表达式求值等场景。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li>只能访问栈顶元素，无法随机访问。</li>
+<li>顺序栈容量固定，需扩容。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-C-实现与常用操作"><a href="#2-C-实现与常用操作" class="headerlink" title="2. C++实现与常用操作"></a>2. C++实现与常用操作</h2><h3 id="2-1-顺序栈（数组-向量）"><a href="#2-1-顺序栈（数组-向量）" class="headerlink" title="2.1 顺序栈（数组&#x2F;向量）"></a>2.1 顺序栈（数组&#x2F;向量）</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyStack</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123; data.<span class="hljs-built_in">push_back</span>(x); &#125;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123; data.<span class="hljs-built_in">pop_back</span>(); &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">top</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> data.<span class="hljs-built_in">back</span>(); &#125;<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">empty</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> data.<span class="hljs-built_in">empty</span>(); &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">size</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> data.<span class="hljs-built_in">size</span>(); &#125;<br><span class="hljs-keyword">private</span>:<br>    std::vector&lt;<span class="hljs-type">int</span>&gt; data;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-链式栈"><a href="#2-2-链式栈" class="headerlink" title="2.2 链式栈"></a>2.2 链式栈</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Node</span> &#123;<br>    <span class="hljs-type">int</span> val;<br>    Node* next;<br>    <span class="hljs-built_in">Node</span>(<span class="hljs-type">int</span> v) : <span class="hljs-built_in">val</span>(v), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>&#125;;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">LinkedStack</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">LinkedStack</span>() : <span class="hljs-built_in">head</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123;<br>        Node* node = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Node</span>(x);<br>        node-&gt;next = head;<br>        head = node;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (head) &#123;<br>            Node* tmp = head;<br>            head = head-&gt;next;<br>            <span class="hljs-keyword">delete</span> tmp;<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">top</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> head-&gt;val; &#125;<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">empty</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> head == <span class="hljs-literal">nullptr</span>; &#125;<br><span class="hljs-keyword">private</span>:<br>    Node* head;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-STL栈"><a href="#2-3-STL栈" class="headerlink" title="2.3 STL栈"></a>2.3 STL栈</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stack&gt;</span></span><br>std::stack&lt;<span class="hljs-type">int</span>&gt; s;<br>s.<span class="hljs-built_in">push</span>(<span class="hljs-number">1</span>);<br>s.<span class="hljs-built_in">pop</span>();<br><span class="hljs-type">int</span> t = s.<span class="hljs-built_in">top</span>();<br><span class="hljs-type">bool</span> e = s.<span class="hljs-built_in">empty</span>();<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-复杂度分析"><a href="#3-复杂度分析" class="headerlink" title="3. 复杂度分析"></a>3. 复杂度分析</h2><ul>
+<li>入栈&#x2F;出栈&#x2F;取栈顶：O(1)</li>
+<li>空间复杂度：O(n)</li>
+</ul>
+<h2 id="4-应用场景"><a href="#4-应用场景" class="headerlink" title="4. 应用场景"></a>4. 应用场景</h2><ul>
+<li>表达式求值、括号匹配、递归、回溯、浏览器前进后退、函数调用栈等。</li>
+</ul>
+<h2 id="5-深入扩展与常见陷阱"><a href="#5-深入扩展与常见陷阱" class="headerlink" title="5. 深入扩展与常见陷阱"></a>5. 深入扩展与常见陷阱</h2><ul>
+<li><strong>栈溢出</strong>：顺序栈空间有限，递归过深或数据过大易溢出。</li>
+<li><strong>空栈操作</strong>：pop&#x2F;top前需判空，避免访问非法内存。</li>
+<li><strong>数据类型一致性</strong>：表达式求值等需注意栈内数据类型。</li>
+<li><strong>多栈协作</strong>：如双栈实现队列、最小栈等需注意同步。</li>
+</ul>
+<h2 id="6-实战案例"><a href="#6-实战案例" class="headerlink" title="6. 实战案例"></a>6. 实战案例</h2><h3 id="案例1：括号匹配"><a href="#案例1：括号匹配" class="headerlink" title="案例1：括号匹配"></a>案例1：括号匹配</h3><p><strong>题意</strong>：判断字符串中的括号是否成对匹配。</p>
+<p><strong>思路</strong>：遇到左括号入栈，遇到右括号判断栈顶是否匹配。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">isValid</span><span class="hljs-params">(<span class="hljs-type">const</span> std::string&amp; s)</span> </span>&#123;<br>    std::stack&lt;<span class="hljs-type">char</span>&gt; stk;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">char</span> c : s) &#123;<br>        <span class="hljs-keyword">if</span> (c == <span class="hljs-string">&#x27;(&#x27;</span> || c == <span class="hljs-string">&#x27;[&#x27;</span> || c == <span class="hljs-string">&#x27;&#123;&#x27;</span>) stk.<span class="hljs-built_in">push</span>(c);<br>        <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">if</span> (stk.<span class="hljs-built_in">empty</span>()) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>            <span class="hljs-type">char</span> t = stk.<span class="hljs-built_in">top</span>(); stk.<span class="hljs-built_in">pop</span>();<br>            <span class="hljs-keyword">if</span> ((c == <span class="hljs-string">&#x27;)&#x27;</span> &amp;&amp; t != <span class="hljs-string">&#x27;(&#x27;</span>) || (c == <span class="hljs-string">&#x27;]&#x27;</span> &amp;&amp; t != <span class="hljs-string">&#x27;[&#x27;</span>) || (c == <span class="hljs-string">&#x27;&#125;&#x27;</span> &amp;&amp; t != <span class="hljs-string">&#x27;&#123;&#x27;</span>)) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> stk.<span class="hljs-built_in">empty</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(n)</p>
+<p><strong>应用说明</strong>：常用于编译器、表达式解析、代码检查等。</p>
+<hr>
+<h3 id="案例2：最小栈"><a href="#案例2：最小栈" class="headerlink" title="案例2：最小栈"></a>案例2：最小栈</h3><p><strong>题意</strong>：实现一个支持O(1)获取最小值的栈。</p>
+<p><strong>思路</strong>：用辅助栈同步维护当前最小值。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinStack</span> &#123;<br>    std::stack&lt;<span class="hljs-type">int</span>&gt; stk, minstk;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123;<br>        stk.<span class="hljs-built_in">push</span>(x);<br>        <span class="hljs-keyword">if</span> (minstk.<span class="hljs-built_in">empty</span>() || x &lt;= minstk.<span class="hljs-built_in">top</span>()) minstk.<span class="hljs-built_in">push</span>(x);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (stk.<span class="hljs-built_in">top</span>() == minstk.<span class="hljs-built_in">top</span>()) minstk.<span class="hljs-built_in">pop</span>();<br>        stk.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">top</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-keyword">return</span> stk.<span class="hljs-built_in">top</span>(); &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">getMin</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-keyword">return</span> minstk.<span class="hljs-built_in">top</span>(); &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(1)</p>
+<p><strong>应用说明</strong>：常用于区间最小值、单调栈优化、滑动窗口等。</p>
+<hr>
+<h3 id="案例3：逆波兰表达式求值"><a href="#案例3：逆波兰表达式求值" class="headerlink" title="案例3：逆波兰表达式求值"></a>案例3：逆波兰表达式求值</h3><p><strong>题意</strong>：给定逆波兰表达式（后缀表达式），计算其值。</p>
+<p><strong>思路</strong>：遇到数字入栈，遇到运算符弹出两个数计算后入栈。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">evalRPN</span><span class="hljs-params">(<span class="hljs-type">const</span> std::vector&lt;std::string&gt;&amp; tokens)</span> </span>&#123;<br>    std::stack&lt;<span class="hljs-type">int</span>&gt; stk;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; t : tokens) &#123;<br>        <span class="hljs-keyword">if</span> (t == <span class="hljs-string">&quot;+&quot;</span> || t == <span class="hljs-string">&quot;-&quot;</span> || t == <span class="hljs-string">&quot;*&quot;</span> || t == <span class="hljs-string">&quot;/&quot;</span>) &#123;<br>            <span class="hljs-type">int</span> b = stk.<span class="hljs-built_in">top</span>(); stk.<span class="hljs-built_in">pop</span>();<br>            <span class="hljs-type">int</span> a = stk.<span class="hljs-built_in">top</span>(); stk.<span class="hljs-built_in">pop</span>();<br>            <span class="hljs-keyword">if</span> (t == <span class="hljs-string">&quot;+&quot;</span>) stk.<span class="hljs-built_in">push</span>(a + b);<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (t == <span class="hljs-string">&quot;-&quot;</span>) stk.<span class="hljs-built_in">push</span>(a - b);<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (t == <span class="hljs-string">&quot;*&quot;</span>) stk.<span class="hljs-built_in">push</span>(a * b);<br>            <span class="hljs-keyword">else</span> stk.<span class="hljs-built_in">push</span>(a / b);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            stk.<span class="hljs-built_in">push</span>(std::<span class="hljs-built_in">stoi</span>(t));<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> stk.<span class="hljs-built_in">top</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(n)</p>
+<p><strong>应用说明</strong>：常用于表达式求值、编译器、计算器实现等。</p>
+<hr>
+<h3 id="案例4：直方图最大矩形面积"><a href="#案例4：直方图最大矩形面积" class="headerlink" title="案例4：直方图最大矩形面积"></a>案例4：直方图最大矩形面积</h3><p><strong>题意</strong>：给定直方图高度数组，求最大矩形面积。</p>
+<p><strong>思路</strong>：用单调栈维护递增高度，遇到矮柱时计算面积。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">largestRectangleArea</span><span class="hljs-params">(<span class="hljs-type">const</span> std::vector&lt;<span class="hljs-type">int</span>&gt;&amp; heights)</span> </span>&#123;<br>    std::stack&lt;<span class="hljs-type">int</span>&gt; stk;<br>    <span class="hljs-type">int</span> maxA = <span class="hljs-number">0</span>, n = heights.<span class="hljs-built_in">size</span>();<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt;= n; ++i) &#123;<br>        <span class="hljs-type">int</span> h = (i == n ? <span class="hljs-number">0</span> : heights[i]);<br>        <span class="hljs-keyword">while</span> (!stk.<span class="hljs-built_in">empty</span>() &amp;&amp; h &lt; heights[stk.<span class="hljs-built_in">top</span>()]) &#123;<br>            <span class="hljs-type">int</span> height = heights[stk.<span class="hljs-built_in">top</span>()]; stk.<span class="hljs-built_in">pop</span>();<br>            <span class="hljs-type">int</span> left = stk.<span class="hljs-built_in">empty</span>() ? <span class="hljs-number">-1</span> : stk.<span class="hljs-built_in">top</span>();<br>            maxA = std::<span class="hljs-built_in">max</span>(maxA, height * (i - left - <span class="hljs-number">1</span>));<br>        &#125;<br>        stk.<span class="hljs-built_in">push</span>(i);<br>    &#125;<br>    <span class="hljs-keyword">return</span> maxA;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(n)</p>
+<p><strong>应用说明</strong>：常用于区间最大值、滑动窗口、矩阵最大子矩形等。</p>
+<hr>
+<p>如需更多数据结构专题，欢迎留言！ </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="category-chain-item">数据结构</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#数据结构</a>
+      
+        <a href="/tags/%E6%A0%88/" class="print-no-link">#栈</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>栈详解与C++实现</div>
+      <div>https://hwl111.github.io/2025/07/数据结构/03_栈详解与C++实现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/02_%E9%93%BE%E8%A1%A8%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/" title="链表详解与C++实现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">链表详解与C++实现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/04_%E9%98%9F%E5%88%97%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/" title="队列详解与C++实现">
+                        <span class="hidden-mobile">队列详解与C++实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

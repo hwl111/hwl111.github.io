@@ -1,0 +1,835 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="B树与B+树详解与C++实现1. B树&#x2F;B+树概念（详细）B树（Balanced Tree）和B+树是多路平衡查找树，广泛用于数据库和文件系统索引。  B树：每个节点可有多个子节点和关键字，所有叶子在同一层，插入&#x2F;删除时分裂与合并节点。 B+树：B树的变种，所有数据只存储在叶子节点，叶子节点通过链表相连，便于区间查询。 节点结构：包含若干关键字和子指针。 分裂与合并：节点满时分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="B树与B+树详解与C++实现">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/11_B%E6%A0%91%E4%B8%8EB+%E6%A0%91%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="B树与B+树详解与C++实现1. B树&#x2F;B+树概念（详细）B树（Balanced Tree）和B+树是多路平衡查找树，广泛用于数据库和文件系统索引。  B树：每个节点可有多个子节点和关键字，所有叶子在同一层，插入&#x2F;删除时分裂与合并节点。 B+树：B树的变种，所有数据只存储在叶子节点，叶子节点通过链表相连，便于区间查询。 节点结构：包含若干关键字和子指针。 分裂与合并：节点满时分">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-17T11:44:41.106Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="B树">
+<meta property="article:tag" content="B+树">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>B树与B+树详解与C++实现 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="B树与B+树详解与C++实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-17 00:00" pubdate>
+          2025年7月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          861 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">B树与B+树详解与C++实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="B树与B-树详解与C-实现"><a href="#B树与B-树详解与C-实现" class="headerlink" title="B树与B+树详解与C++实现"></a>B树与B+树详解与C++实现</h1><h2 id="1-B树-B-树概念（详细）"><a href="#1-B树-B-树概念（详细）" class="headerlink" title="1. B树&#x2F;B+树概念（详细）"></a>1. B树&#x2F;B+树概念（详细）</h2><p>B树（Balanced Tree）和B+树是多路平衡查找树，广泛用于数据库和文件系统索引。</p>
+<ul>
+<li><strong>B树</strong>：每个节点可有多个子节点和关键字，所有叶子在同一层，插入&#x2F;删除时分裂与合并节点。</li>
+<li><strong>B+树</strong>：B树的变种，所有数据只存储在叶子节点，叶子节点通过链表相连，便于区间查询。</li>
+<li><strong>节点结构</strong>：包含若干关键字和子指针。</li>
+<li><strong>分裂与合并</strong>：节点满时分裂，空时合并，保持平衡。</li>
+<li><strong>磁盘友好</strong>：节点大，减少IO次数，适合大规模外存。</li>
+<li><strong>优点</strong>：<ul>
+<li>高度平衡，查找&#x2F;插入&#x2F;删除O(log n)。</li>
+<li>适合磁盘&#x2F;SSD等块存储。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li>实现复杂。</li>
+<li>不适合频繁内存操作。</li>
+</ul>
+</li>
+<li><strong>B树与B+树区别</strong>：B+树所有数据在叶子，非叶节点只做索引，叶子链表便于区间查询。</li>
+</ul>
+<h2 id="2-C-实现与常用操作（结构-伪代码为主）"><a href="#2-C-实现与常用操作（结构-伪代码为主）" class="headerlink" title="2. C++实现与常用操作（结构&#x2F;伪代码为主）"></a>2. C++实现与常用操作（结构&#x2F;伪代码为主）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// B树节点结构</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">BTreeNode</span> &#123;<br>    std::vector&lt;<span class="hljs-type">int</span>&gt; keys;<br>    std::vector&lt;BTreeNode*&gt; children;<br>    <span class="hljs-type">bool</span> isLeaf;<br>    <span class="hljs-built_in">BTreeNode</span>(<span class="hljs-type">bool</span> leaf) : <span class="hljs-built_in">isLeaf</span>(leaf) &#123;&#125;<br>&#125;;<br><span class="hljs-comment">// B+树节点结构</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">BPlusTreeNode</span> &#123;<br>    std::vector&lt;<span class="hljs-type">int</span>&gt; keys;<br>    std::vector&lt;BPlusTreeNode*&gt; children;<br>    BPlusTreeNode* next; <span class="hljs-comment">// 叶子链表</span><br>    <span class="hljs-type">bool</span> isLeaf;<br>    <span class="hljs-built_in">BPlusTreeNode</span>(<span class="hljs-type">bool</span> leaf) : <span class="hljs-built_in">isLeaf</span>(leaf), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>&#125;;<br><span class="hljs-comment">// 具体插入/查找/分裂等操作略，实际工程多用库实现</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="3-复杂度分析"><a href="#3-复杂度分析" class="headerlink" title="3. 复杂度分析"></a>3. 复杂度分析</h2><ul>
+<li>查找&#x2F;插入&#x2F;删除：O(log n)</li>
+<li>空间复杂度：O(n)</li>
+</ul>
+<h2 id="4-应用场景"><a href="#4-应用场景" class="headerlink" title="4. 应用场景"></a>4. 应用场景</h2><ul>
+<li>数据库索引、文件系统、SSD存储、区间查询、大规模外存数据。</li>
+</ul>
+<h2 id="5-深入扩展与常见陷阱"><a href="#5-深入扩展与常见陷阱" class="headerlink" title="5. 深入扩展与常见陷阱"></a>5. 深入扩展与常见陷阱</h2><ul>
+<li><strong>节点分裂&#x2F;合并复杂</strong>：插入&#x2F;删除时需递归分裂或合并节点。</li>
+<li><strong>磁盘IO优化</strong>：节点大小需与磁盘块对齐，减少IO。</li>
+<li><strong>B树与B+树遍历差异</strong>：B+树叶子链表便于区间遍历，B树需递归。</li>
+<li><strong>多路分支指针维护</strong>：插入&#x2F;删除时多指针同步，易出错。</li>
+</ul>
+<h2 id="6-实战案例"><a href="#6-实战案例" class="headerlink" title="6. 实战案例"></a>6. 实战案例</h2><h3 id="案例1：数据库索引实现"><a href="#案例1：数据库索引实现" class="headerlink" title="案例1：数据库索引实现"></a>案例1：数据库索引实现</h3><p><strong>题意</strong>：分析数据库如何用B+树实现高效索引。</p>
+<p><strong>思路</strong>：B+树叶子节点存储所有数据，非叶节点做索引，便于范围查找。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 见正文2 B+树节点结构</span><br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(log n)</p>
+<p><strong>应用说明</strong>：数据库、文件系统、SSD索引等。</p>
+<hr>
+<h3 id="案例2：区间查找与范围查询"><a href="#案例2：区间查找与范围查询" class="headerlink" title="案例2：区间查找与范围查询"></a>案例2：区间查找与范围查询</h3><p><strong>题意</strong>：支持区间[l, r]的高效查找。</p>
+<p><strong>思路</strong>：B+树叶子链表顺序遍历，B树需递归遍历。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 需实现B+树叶子链表遍历，略</span><br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(log n + k)</p>
+<p><strong>应用说明</strong>：数据库区间查询、文件系统、分布式存储等。</p>
+<hr>
+<h3 id="案例3：磁盘IO优化"><a href="#案例3：磁盘IO优化" class="headerlink" title="案例3：磁盘IO优化"></a>案例3：磁盘IO优化</h3><p><strong>题意</strong>：分析B树&#x2F;B+树如何减少磁盘IO。</p>
+<p><strong>思路</strong>：节点大小与磁盘块对齐，减少树高和访问次数。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 结构设计与块对齐，略</span><br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(log n)</p>
+<p><strong>应用说明</strong>：大规模外存索引、SSD优化、数据库等。</p>
+<hr>
+<h3 id="案例4：B-树范围查询与排名"><a href="#案例4：B-树范围查询与排名" class="headerlink" title="案例4：B+树范围查询与排名"></a>案例4：B+树范围查询与排名</h3><p><strong>题意</strong>：支持区间范围查询和元素排名。</p>
+<p><strong>思路</strong>：B+树叶子链表顺序遍历，节点维护排名信息。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 需实现带排名的B+树，略</span><br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(log n + k)</p>
+<p><strong>应用说明</strong>：数据库、搜索引擎、分布式系统等。</p>
+<hr>
+<p>如需更多数据结构专题，欢迎留言！ </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="category-chain-item">数据结构</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#数据结构</a>
+      
+        <a href="/tags/B%E6%A0%91/" class="print-no-link">#B树</a>
+      
+        <a href="/tags/B-%E6%A0%91/" class="print-no-link">#B+树</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>B树与B+树详解与C++实现</div>
+      <div>https://hwl111.github.io/2025/07/数据结构/11_B树与B+树详解与C++实现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/12_%E7%BA%A2%E9%BB%91%E6%A0%91%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/" title="红黑树详解与C++实现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">红黑树详解与C++实现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/MySQL%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3/" title="MySQL语法与场景详解">
+                        <span class="hidden-mobile">MySQL语法与场景详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

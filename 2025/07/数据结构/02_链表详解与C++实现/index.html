@@ -1,0 +1,843 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="链表详解与C++实现1. 链表概念（详细）链表（Linked List）是一种链式存储的数据结构，由一组节点（Node）通过指针连接而成。每个节点包含数据域和指针域。  单链表：每个节点只包含指向下一个节点的指针。 双向链表：每个节点包含指向前驱和后继的指针，支持双向遍历。 循环链表：最后一个节点指向头节点，形成环状结构。 节点结构： 数据域：存储实际数据。 指针域：存储下一个（和&#x2F;或上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="链表详解与C++实现">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/02_%E9%93%BE%E8%A1%A8%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="链表详解与C++实现1. 链表概念（详细）链表（Linked List）是一种链式存储的数据结构，由一组节点（Node）通过指针连接而成。每个节点包含数据域和指针域。  单链表：每个节点只包含指向下一个节点的指针。 双向链表：每个节点包含指向前驱和后继的指针，支持双向遍历。 循环链表：最后一个节点指向头节点，形成环状结构。 节点结构： 数据域：存储实际数据。 指针域：存储下一个（和&#x2F;或上">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-17T11:40:36.907Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="链表">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>链表详解与C++实现 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="链表详解与C++实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-17 00:00" pubdate>
+          2025年7月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">链表详解与C++实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="链表详解与C-实现"><a href="#链表详解与C-实现" class="headerlink" title="链表详解与C++实现"></a>链表详解与C++实现</h1><h2 id="1-链表概念（详细）"><a href="#1-链表概念（详细）" class="headerlink" title="1. 链表概念（详细）"></a>1. 链表概念（详细）</h2><p>链表（Linked List）是一种<strong>链式存储</strong>的数据结构，由一组节点（Node）通过指针连接而成。每个节点包含数据域和指针域。</p>
+<ul>
+<li><strong>单链表</strong>：每个节点只包含指向下一个节点的指针。</li>
+<li><strong>双向链表</strong>：每个节点包含指向前驱和后继的指针，支持双向遍历。</li>
+<li><strong>循环链表</strong>：最后一个节点指向头节点，形成环状结构。</li>
+<li><strong>节点结构</strong>：<ul>
+<li>数据域：存储实际数据。</li>
+<li>指针域：存储下一个（和&#x2F;或上一个）节点的地址。</li>
+</ul>
+</li>
+<li><strong>优点</strong>：<ul>
+<li>插入&#x2F;删除操作无需整体移动元素，O(1)（已知位置）。</li>
+<li>动态分配内存，大小灵活。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li>访问元素需从头遍历，随机访问效率低O(n)。</li>
+<li>额外指针域占用空间。</li>
+<li>不利于CPU缓存。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-C-实现与常用操作"><a href="#2-C-实现与常用操作" class="headerlink" title="2. C++实现与常用操作"></a>2. C++实现与常用操作</h2><h3 id="2-1-单链表节点与基本操作"><a href="#2-1-单链表节点与基本操作" class="headerlink" title="2.1 单链表节点与基本操作"></a>2.1 单链表节点与基本操作</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">ListNode</span> &#123;<br>    <span class="hljs-type">int</span> val;<br>    ListNode* next;<br>    <span class="hljs-built_in">ListNode</span>(<span class="hljs-type">int</span> v) : <span class="hljs-built_in">val</span>(v), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>&#125;;<br><span class="hljs-comment">// 插入头部</span><br><span class="hljs-function">ListNode* <span class="hljs-title">insertHead</span><span class="hljs-params">(ListNode* head, <span class="hljs-type">int</span> val)</span> </span>&#123;<br>    ListNode* node = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ListNode</span>(val);<br>    node-&gt;next = head;<br>    <span class="hljs-keyword">return</span> node;<br>&#125;<br><span class="hljs-comment">// 删除指定值节点</span><br><span class="hljs-function">ListNode* <span class="hljs-title">deleteVal</span><span class="hljs-params">(ListNode* head, <span class="hljs-type">int</span> val)</span> </span>&#123;<br>    <span class="hljs-function">ListNode <span class="hljs-title">dummy</span><span class="hljs-params">(<span class="hljs-number">0</span>)</span></span>; dummy.next = head;<br>    ListNode* p = &amp;dummy;<br>    <span class="hljs-keyword">while</span> (p-&gt;next) &#123;<br>        <span class="hljs-keyword">if</span> (p-&gt;next-&gt;val == val) &#123;<br>            ListNode* tmp = p-&gt;next;<br>            p-&gt;next = tmp-&gt;next;<br>            <span class="hljs-keyword">delete</span> tmp;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            p = p-&gt;next;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> dummy.next;<br>&#125;<br><span class="hljs-comment">// 查找</span><br><span class="hljs-function">ListNode* <span class="hljs-title">find</span><span class="hljs-params">(ListNode* head, <span class="hljs-type">int</span> val)</span> </span>&#123;<br>    <span class="hljs-keyword">while</span> (head) &#123;<br>        <span class="hljs-keyword">if</span> (head-&gt;val == val) <span class="hljs-keyword">return</span> head;<br>        head = head-&gt;next;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;<br>&#125;<br><span class="hljs-comment">// 反转链表</span><br><span class="hljs-function">ListNode* <span class="hljs-title">reverse</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;<br>    ListNode* prev = <span class="hljs-literal">nullptr</span>;<br>    <span class="hljs-keyword">while</span> (head) &#123;<br>        ListNode* next = head-&gt;next;<br>        head-&gt;next = prev;<br>        prev = head;<br>        head = next;<br>    &#125;<br>    <span class="hljs-keyword">return</span> prev;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-双向链表节点"><a href="#2-2-双向链表节点" class="headerlink" title="2.2 双向链表节点"></a>2.2 双向链表节点</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">DListNode</span> &#123;<br>    <span class="hljs-type">int</span> val;<br>    DListNode* prev;<br>    DListNode* next;<br>    <span class="hljs-built_in">DListNode</span>(<span class="hljs-type">int</span> v) : <span class="hljs-built_in">val</span>(v), <span class="hljs-built_in">prev</span>(<span class="hljs-literal">nullptr</span>), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-STL链表"><a href="#2-3-STL链表" class="headerlink" title="2.3 STL链表"></a>2.3 STL链表</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;list&gt;</span></span><br>std::list&lt;<span class="hljs-type">int</span>&gt; l;<br>l.<span class="hljs-built_in">push_back</span>(<span class="hljs-number">1</span>);<br>l.<span class="hljs-built_in">push_front</span>(<span class="hljs-number">2</span>);<br>l.<span class="hljs-built_in">pop_back</span>();<br>l.<span class="hljs-built_in">pop_front</span>();<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> v : l) std::cout &lt;&lt; v &lt;&lt; <span class="hljs-string">&quot; &quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-复杂度分析"><a href="#3-复杂度分析" class="headerlink" title="3. 复杂度分析"></a>3. 复杂度分析</h2><ul>
+<li>插入&#x2F;删除（已知节点）：O(1)</li>
+<li>查找&#x2F;访问：O(n)</li>
+<li>空间复杂度：O(n)</li>
+</ul>
+<h2 id="4-应用场景"><a href="#4-应用场景" class="headerlink" title="4. 应用场景"></a>4. 应用场景</h2><ul>
+<li>频繁插入&#x2F;删除的场景，如LRU缓存、队列、哈希表拉链法。</li>
+<li>需要动态扩容、元素数量不确定的数据。</li>
+<li>实现栈、队列、图的邻接表等。</li>
+</ul>
+<h2 id="5-深入扩展与常见陷阱"><a href="#5-深入扩展与常见陷阱" class="headerlink" title="5. 深入扩展与常见陷阱"></a>5. 深入扩展与常见陷阱</h2><ul>
+<li><strong>头指针处理</strong>：插入&#x2F;删除头节点时需特殊处理，常用虚拟头节点(dummy head)。</li>
+<li><strong>内存泄漏</strong>：删除节点后需手动释放内存，防止泄漏。</li>
+<li><strong>指针悬挂</strong>：节点被删除后，其他指针仍指向已释放内存。</li>
+<li><strong>环形链表</strong>：不慎形成环会导致死循环，需检测环。</li>
+<li><strong>多链表操作</strong>：合并、交叉、分割等需注意指针操作顺序。</li>
+</ul>
+<h2 id="6-实战案例"><a href="#6-实战案例" class="headerlink" title="6. 实战案例"></a>6. 实战案例</h2><h3 id="案例1：链表反转"><a href="#案例1：链表反转" class="headerlink" title="案例1：链表反转"></a>案例1：链表反转</h3><p><strong>题意</strong>：给定单链表头指针，反转链表并返回新头。</p>
+<p><strong>思路</strong>：用三个指针依次反转next指向。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function">ListNode* <span class="hljs-title">reverseList</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;<br>    ListNode* prev = <span class="hljs-literal">nullptr</span>;<br>    <span class="hljs-keyword">while</span> (head) &#123;<br>        ListNode* next = head-&gt;next;<br>        head-&gt;next = prev;<br>        prev = head;<br>        head = next;<br>    &#125;<br>    <span class="hljs-keyword">return</span> prev;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(n)</p>
+<p><strong>应用说明</strong>：常用于链表倒序、栈模拟、递归反转等。</p>
+<hr>
+<h3 id="案例2：LRU缓存（双向链表-哈希表）"><a href="#案例2：LRU缓存（双向链表-哈希表）" class="headerlink" title="案例2：LRU缓存（双向链表+哈希表）"></a>案例2：LRU缓存（双向链表+哈希表）</h3><p><strong>题意</strong>：实现LRU缓存，支持O(1)插入、删除、访问。</p>
+<p><strong>思路</strong>：用双向链表维护访问顺序，哈希表定位节点。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unordered_map&gt;</span></span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">DListNode</span> &#123;<br>    <span class="hljs-type">int</span> key, val;<br>    DListNode *prev, *next;<br>    <span class="hljs-built_in">DListNode</span>(<span class="hljs-type">int</span> k, <span class="hljs-type">int</span> v) : <span class="hljs-built_in">key</span>(k), <span class="hljs-built_in">val</span>(v), <span class="hljs-built_in">prev</span>(<span class="hljs-literal">nullptr</span>), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>&#125;;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">LRUCache</span> &#123;<br>    <span class="hljs-type">int</span> cap;<br>    std::unordered_map&lt;<span class="hljs-type">int</span>, DListNode*&gt; mp;<br>    DListNode *head, *tail;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">moveToHead</span><span class="hljs-params">(DListNode* node)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (node == head) <span class="hljs-keyword">return</span>;<br>        <span class="hljs-comment">// remove</span><br>        node-&gt;prev-&gt;next = node-&gt;next;<br>        <span class="hljs-keyword">if</span> (node-&gt;next) node-&gt;next-&gt;prev = node-&gt;prev;<br>        <span class="hljs-keyword">else</span> tail = node-&gt;prev;<br>        <span class="hljs-comment">// insert to head</span><br>        node-&gt;next = head;<br>        node-&gt;prev = <span class="hljs-literal">nullptr</span>;<br>        head-&gt;prev = node;<br>        head = node;<br>    &#125;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">LRUCache</span>(<span class="hljs-type">int</span> capacity) : <span class="hljs-built_in">cap</span>(capacity), <span class="hljs-built_in">head</span>(<span class="hljs-literal">nullptr</span>), <span class="hljs-built_in">tail</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (!mp.<span class="hljs-built_in">count</span>(key)) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>        <span class="hljs-built_in">moveToHead</span>(mp[key]);<br>        <span class="hljs-keyword">return</span> mp[key]-&gt;val;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">put</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (mp.<span class="hljs-built_in">count</span>(key)) &#123;<br>            mp[key]-&gt;val = value;<br>            <span class="hljs-built_in">moveToHead</span>(mp[key]);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            DListNode* node = <span class="hljs-keyword">new</span> <span class="hljs-built_in">DListNode</span>(key, value);<br>            node-&gt;next = head;<br>            <span class="hljs-keyword">if</span> (head) head-&gt;prev = node;<br>            head = node;<br>            <span class="hljs-keyword">if</span> (!tail) tail = node;<br>            mp[key] = node;<br>            <span class="hljs-keyword">if</span> (mp.<span class="hljs-built_in">size</span>() &gt; cap) &#123;<br>                mp.<span class="hljs-built_in">erase</span>(tail-&gt;key);<br>                DListNode* pre = tail-&gt;prev;<br>                <span class="hljs-keyword">if</span> (pre) pre-&gt;next = <span class="hljs-literal">nullptr</span>;<br>                <span class="hljs-keyword">delete</span> tail;<br>                tail = pre;<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(1)</p>
+<p><strong>应用说明</strong>：常用于缓存淘汰、内存管理、最近最少使用策略。</p>
+<hr>
+<h3 id="案例3：环形链表检测（快慢指针）"><a href="#案例3：环形链表检测（快慢指针）" class="headerlink" title="案例3：环形链表检测（快慢指针）"></a>案例3：环形链表检测（快慢指针）</h3><p><strong>题意</strong>：判断链表是否有环。</p>
+<p><strong>思路</strong>：快慢指针，快指针每次走两步，慢指针走一步，若相遇则有环。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">hasCycle</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;<br>    ListNode *slow = head, *fast = head;<br>    <span class="hljs-keyword">while</span> (fast &amp;&amp; fast-&gt;next) &#123;<br>        slow = slow-&gt;next;<br>        fast = fast-&gt;next-&gt;next;<br>        <span class="hljs-keyword">if</span> (slow == fast) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(n)</p>
+<p><strong>应用说明</strong>：常用于链表环检测、死锁检测、循环依赖等。</p>
+<hr>
+<h3 id="案例4：合并两个有序链表"><a href="#案例4：合并两个有序链表" class="headerlink" title="案例4：合并两个有序链表"></a>案例4：合并两个有序链表</h3><p><strong>题意</strong>：合并两个升序链表为一个新链表。</p>
+<p><strong>思路</strong>：双指针逐步比较，依次连接。</p>
+<p><strong>C++代码</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function">ListNode* <span class="hljs-title">mergeTwoLists</span><span class="hljs-params">(ListNode* l1, ListNode* l2)</span> </span>&#123;<br>    <span class="hljs-function">ListNode <span class="hljs-title">dummy</span><span class="hljs-params">(<span class="hljs-number">0</span>)</span>, *cur </span>= &amp;dummy;<br>    <span class="hljs-keyword">while</span> (l1 &amp;&amp; l2) &#123;<br>        <span class="hljs-keyword">if</span> (l1-&gt;val &lt; l2-&gt;val) &#123; cur-&gt;next = l1; l1 = l1-&gt;next; &#125;<br>        <span class="hljs-keyword">else</span> &#123; cur-&gt;next = l2; l2 = l2-&gt;next; &#125;<br>        cur = cur-&gt;next;<br>    &#125;<br>    cur-&gt;next = l1 ? l1 : l2;<br>    <span class="hljs-keyword">return</span> dummy.next;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>复杂度</strong>：O(n+m)</p>
+<p><strong>应用说明</strong>：常用于归并排序、合并区间、数据流合并等。</p>
+<hr>
+<p>如需更多数据结构专题，欢迎留言！ </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="category-chain-item">数据结构</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#数据结构</a>
+      
+        <a href="/tags/%E9%93%BE%E8%A1%A8/" class="print-no-link">#链表</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>链表详解与C++实现</div>
+      <div>https://hwl111.github.io/2025/07/数据结构/02_链表详解与C++实现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AE%97%E6%B3%95/09_Trie%E5%AD%97%E5%85%B8%E6%A0%91%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/" title="Trie字典树算法详解与C++实现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Trie字典树算法详解与C++实现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/03_%E6%A0%88%E8%AF%A6%E8%A7%A3%E4%B8%8EC++%E5%AE%9E%E7%8E%B0/" title="栈详解与C++实现">
+                        <span class="hidden-mobile">栈详解与C++实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
