@@ -1,0 +1,853 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="C++11&#x2F;14&#x2F;17&#x2F;20新特性详解本文系统梳理C++11&#x2F;14&#x2F;17&#x2F;20的主要新特性，涵盖【概念】、【使用场景】、代码示例、语法增强、标准库扩展和实际应用建议。 1. C++11 主要新特性auto 类型推断【概念】自动根据初始化表达式推断变量类型。【使用场景】简化泛型代码、减少冗余类型声明。 12auto x &#x3D; 10;auto">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++11&#x2F;14&#x2F;17&#x2F;20新特性详解">
+<meta property="og:url" content="https://hwl111.github.io/2025/06/%E7%AC%94%E8%AE%B0/C++11-14-17-20%E6%96%B0%E7%89%B9%E6%80%A7%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="C++11&#x2F;14&#x2F;17&#x2F;20新特性详解本文系统梳理C++11&#x2F;14&#x2F;17&#x2F;20的主要新特性，涵盖【概念】、【使用场景】、代码示例、语法增强、标准库扩展和实际应用建议。 1. C++11 主要新特性auto 类型推断【概念】自动根据初始化表达式推断变量类型。【使用场景】简化泛型代码、减少冗余类型声明。 12auto x &#x3D; 10;auto">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-06-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-09T16:00:00.000Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="新特性">
+<meta property="article:tag" content="现代C++">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>C++11/14/17/20新特性详解 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="C++11/14/17/20新特性详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-10 00:00" pubdate>
+          2025年6月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">C++11/14/17/20新特性详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="C-11-14-17-20新特性详解"><a href="#C-11-14-17-20新特性详解" class="headerlink" title="C++11&#x2F;14&#x2F;17&#x2F;20新特性详解"></a>C++11&#x2F;14&#x2F;17&#x2F;20新特性详解</h1><p>本文系统梳理C++11&#x2F;14&#x2F;17&#x2F;20的主要新特性，涵盖【概念】、【使用场景】、代码示例、语法增强、标准库扩展和实际应用建议。</p>
+<h2 id="1-C-11-主要新特性"><a href="#1-C-11-主要新特性" class="headerlink" title="1. C++11 主要新特性"></a>1. C++11 主要新特性</h2><h3 id="auto-类型推断"><a href="#auto-类型推断" class="headerlink" title="auto 类型推断"></a>auto 类型推断</h3><p><strong>【概念】</strong><br>自动根据初始化表达式推断变量类型。<br><strong>【使用场景】</strong><br>简化泛型代码、减少冗余类型声明。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> x = <span class="hljs-number">10</span>;<br><span class="hljs-keyword">auto</span> it = v.<span class="hljs-built_in">begin</span>();<br></code></pre></td></tr></table></figure>
+
+<h3 id="range-based-for-循环"><a href="#range-based-for-循环" class="headerlink" title="range-based for 循环"></a>range-based for 循环</h3><p><strong>【概念】</strong><br>基于范围的for循环，简化容器遍历。<br><strong>【使用场景】</strong><br>遍历STL容器、数组等。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">vector&lt;<span class="hljs-type">int</span>&gt; v = &#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>&#125;;<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span>&amp; x : v) cout &lt;&lt; x &lt;&lt; endl;<br></code></pre></td></tr></table></figure>
+
+<h3 id="lambda-表达式"><a href="#lambda-表达式" class="headerlink" title="lambda 表达式"></a>lambda 表达式</h3><p><strong>【概念】</strong><br>匿名函数对象，支持捕获外部变量。<br><strong>【使用场景】</strong><br>回调、算法、并发任务、事件处理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> f = [](<span class="hljs-type">int</span> x) &#123; <span class="hljs-keyword">return</span> x * x; &#125;;<br>cout &lt;&lt; <span class="hljs-built_in">f</span>(<span class="hljs-number">5</span>) &lt;&lt; endl;<br></code></pre></td></tr></table></figure>
+
+<h3 id="智能指针（unique-ptr-shared-ptr-weak-ptr）"><a href="#智能指针（unique-ptr-shared-ptr-weak-ptr）" class="headerlink" title="智能指针（unique_ptr, shared_ptr, weak_ptr）"></a>智能指针（unique_ptr, shared_ptr, weak_ptr）</h3><p><strong>【概念】</strong><br>自动管理动态内存，防止内存泄漏。<br><strong>【使用场景】</strong><br>资源管理、对象生命周期控制。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-keyword">auto</span> p1 = std::<span class="hljs-built_in">make_unique</span>&lt;<span class="hljs-type">int</span>&gt;(<span class="hljs-number">42</span>);<br><span class="hljs-keyword">auto</span> p2 = std::<span class="hljs-built_in">make_shared</span>&lt;<span class="hljs-type">int</span>&gt;(<span class="hljs-number">100</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="右值引用与移动语义"><a href="#右值引用与移动语义" class="headerlink" title="右值引用与移动语义"></a>右值引用与移动语义</h3><p><strong>【概念】</strong><br>支持资源的高效转移，避免不必要的拷贝。<br><strong>【使用场景】</strong><br>容器扩容、临时对象优化、大对象传递。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp">vector&lt;string&gt; v;<br>v.<span class="hljs-built_in">push_back</span>(<span class="hljs-string">&quot;hello&quot;</span>); <span class="hljs-comment">// 移动语义</span><br>string s = <span class="hljs-string">&quot;world&quot;</span>;<br>v.<span class="hljs-built_in">push_back</span>(std::<span class="hljs-built_in">move</span>(s));<br></code></pre></td></tr></table></figure>
+
+<h3 id="nullptr、enum-class、static-assert"><a href="#nullptr、enum-class、static-assert" class="headerlink" title="nullptr、enum class、static_assert"></a>nullptr、enum class、static_assert</h3><p><strong>【概念】</strong><br>nullptr：类型安全的空指针；enum class：强类型枚举；static_assert：编译期断言。<br><strong>【使用场景】</strong><br>类型安全、编译期检查、枚举类型。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">int</span>* p = <span class="hljs-literal">nullptr</span>;<br><span class="hljs-keyword">enum class</span> <span class="hljs-title class_">Color</span> &#123; Red, Green, Blue &#125;;<br><span class="hljs-built_in">static_assert</span>(<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) == <span class="hljs-number">4</span>, <span class="hljs-string">&quot;int必须4字节&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="constexpr、委托构造函数、继承构造函数"><a href="#constexpr、委托构造函数、继承构造函数" class="headerlink" title="constexpr、委托构造函数、继承构造函数"></a>constexpr、委托构造函数、继承构造函数</h3><p><strong>【概念】</strong><br>constexpr：编译期常量；委托&#x2F;继承构造函数：简化构造逻辑。<br><strong>【使用场景】</strong><br>常量表达式、构造函数重用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> <span class="hljs-title">sq</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123; <span class="hljs-keyword">return</span> x * x; &#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">A</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">A</span>(<span class="hljs-type">int</span> x) &#123;&#125;<br>    <span class="hljs-built_in">A</span>() : <span class="hljs-built_in">A</span>(<span class="hljs-number">0</span>) &#123;&#125; <span class="hljs-comment">// 委托构造</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="std-thread、std-mutex-等并发库"><a href="#std-thread、std-mutex-等并发库" class="headerlink" title="std::thread、std::mutex 等并发库"></a>std::thread、std::mutex 等并发库</h3><p><strong>【概念】</strong><br>标准库原生支持多线程与同步。<br><strong>【使用场景】</strong><br>并发编程、异步任务。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">func</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-comment">/*...*/</span> &#125;<br><span class="hljs-function">std::thread <span class="hljs-title">t</span><span class="hljs-params">(func)</span></span>;<br>t.<span class="hljs-built_in">join</span>();<br></code></pre></td></tr></table></figure>
+
+<h3 id="初始化列表（initializer-list）"><a href="#初始化列表（initializer-list）" class="headerlink" title="初始化列表（initializer_list）"></a>初始化列表（initializer_list）</h3><p><strong>【概念】</strong><br>统一的初始化语法。<br><strong>【使用场景】</strong><br>容器初始化、构造函数参数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp">vector&lt;<span class="hljs-type">int</span>&gt; v = &#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>&#125;;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">B</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">B</span>(std::initializer_list&lt;<span class="hljs-type">int</span>&gt; l) &#123;&#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-C-14-主要新特性"><a href="#2-C-14-主要新特性" class="headerlink" title="2. C++14 主要新特性"></a>2. C++14 主要新特性</h2><h3 id="泛型lambda（auto参数）"><a href="#泛型lambda（auto参数）" class="headerlink" title="泛型lambda（auto参数）"></a>泛型lambda（auto参数）</h3><p><strong>【概念】</strong><br>lambda参数可用auto声明，支持任意类型。<br><strong>【使用场景】</strong><br>泛型算法、回调。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> add = [](<span class="hljs-keyword">auto</span> a, <span class="hljs-keyword">auto</span> b) &#123; <span class="hljs-keyword">return</span> a + b; &#125;;<br>cout &lt;&lt; <span class="hljs-built_in">add</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2.5</span>) &lt;&lt; endl;<br></code></pre></td></tr></table></figure>
+
+<h3 id="return-type-deduction（函数返回类型自动推断）"><a href="#return-type-deduction（函数返回类型自动推断）" class="headerlink" title="return type deduction（函数返回类型自动推断）"></a>return type deduction（函数返回类型自动推断）</h3><p><strong>【概念】</strong><br>函数返回类型可省略，由编译器推断。<br><strong>【使用场景】</strong><br>简化模板和泛型代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">auto</span> <span class="hljs-title">func</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-keyword">return</span> <span class="hljs-number">42</span>; &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="make-unique"><a href="#make-unique" class="headerlink" title="make_unique"></a>make_unique</h3><p><strong>【概念】</strong><br>安全创建unique_ptr的辅助函数。<br><strong>【使用场景】</strong><br>资源管理、避免裸new。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> p = std::<span class="hljs-built_in">make_unique</span>&lt;<span class="hljs-type">int</span>&gt;(<span class="hljs-number">42</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="二进制字面量（0b1010）"><a href="#二进制字面量（0b1010）" class="headerlink" title="二进制字面量（0b1010）"></a>二进制字面量（0b1010）</h3><p><strong>【概念】</strong><br>支持二进制常量。<br><strong>【使用场景】</strong><br>位运算、底层开发。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">int</span> x = <span class="hljs-number">0b1010</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="std-shared-timed-mutex"><a href="#std-shared-timed-mutex" class="headerlink" title="std::shared_timed_mutex"></a>std::shared_timed_mutex</h3><p><strong>【概念】</strong><br>支持读写锁和定时锁。<br><strong>【使用场景】</strong><br>高并发读多写少场景。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;shared_mutex&gt;</span></span><br>std::shared_timed_mutex mtx;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-C-17-主要新特性"><a href="#3-C-17-主要新特性" class="headerlink" title="3. C++17 主要新特性"></a>3. C++17 主要新特性</h2><h3 id="结构化绑定（structured-bindings）"><a href="#结构化绑定（structured-bindings）" class="headerlink" title="结构化绑定（structured bindings）"></a>结构化绑定（structured bindings）</h3><p><strong>【概念】</strong><br>可将结构&#x2F;元组解包为多个变量。<br><strong>【使用场景】</strong><br>遍历map、解构pair&#x2F;tuple。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> [a, b] = std::<span class="hljs-built_in">make_pair</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>);<br>map&lt;string, <span class="hljs-type">int</span>&gt; m = &#123;&#123;<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-number">1</span>&#125;,&#123;<span class="hljs-string">&quot;b&quot;</span>,<span class="hljs-number">2</span>&#125;&#125;;<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span>&amp; [k, v] : m) cout &lt;&lt; k &lt;&lt; v;<br></code></pre></td></tr></table></figure>
+
+<h3 id="if-constexpr"><a href="#if-constexpr" class="headerlink" title="if constexpr"></a>if constexpr</h3><p><strong>【概念】</strong><br>编译期条件分支。<br><strong>【使用场景】</strong><br>模板元编程、类型特化。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">print</span><span class="hljs-params">(T t)</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">if</span> <span class="hljs-title">constexpr</span> <span class="hljs-params">(std::is_integral&lt;T&gt;::value)</span></span><br><span class="hljs-function">        cout &lt;&lt; &quot;<span class="hljs-type">int</span>: <span class="hljs-string">&quot; &lt;&lt; t &lt;&lt; endl;</span></span><br><span class="hljs-string"><span class="hljs-function">    else</span></span><br><span class="hljs-string"><span class="hljs-function">        cout &lt;&lt; &quot;</span>other: <span class="hljs-string">&quot; &lt;&lt; t &lt;&lt; endl;</span></span><br><span class="hljs-string"><span class="hljs-function">&#125;</span></span><br></code></pre></td></tr></table></figure>
+
+<h3 id="内联变量（inline-variable）"><a href="#内联变量（inline-variable）" class="headerlink" title="内联变量（inline variable）"></a>内联变量（inline variable）</h3><p><strong>【概念】</strong><br>支持头文件中定义全局变量。<br><strong>【使用场景】</strong><br>常量、单例。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> x = <span class="hljs-number">10</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="std-optional-std-variant-std-any"><a href="#std-optional-std-variant-std-any" class="headerlink" title="std::optional, std::variant, std::any"></a>std::optional, std::variant, std::any</h3><p><strong>【概念】</strong><br>可选值、类型安全的联合体、任意类型容器。<br><strong>【使用场景】</strong><br>函数返回值、配置、类型擦除。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;optional&gt;</span></span><br>optional&lt;<span class="hljs-type">int</span>&gt; o = <span class="hljs-number">5</span>;<br><span class="hljs-keyword">if</span> (o) cout &lt;&lt; *o;<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;variant&gt;</span></span><br>variant&lt;<span class="hljs-type">int</span>, string&gt; v = <span class="hljs-string">&quot;hello&quot;</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;any&gt;</span></span><br>any a = <span class="hljs-number">10</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="std-string-view"><a href="#std-string-view" class="headerlink" title="std::string_view"></a>std::string_view</h3><p><strong>【概念】</strong><br>轻量级字符串视图，避免拷贝。<br><strong>【使用场景】</strong><br>高性能字符串处理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string_view&gt;</span></span><br>string_view sv = <span class="hljs-string">&quot;hello&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="并行STL算法（std-for-each-par-…-）"><a href="#并行STL算法（std-for-each-par-…-）" class="headerlink" title="并行STL算法（std::for_each(par, … )）"></a>并行STL算法（std::for_each(par, … )）</h3><p><strong>【概念】</strong><br>STL算法支持并行执行。<br><strong>【使用场景】</strong><br>大数据量并行处理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;execution&gt;</span></span><br>vector&lt;<span class="hljs-type">int</span>&gt; v = &#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>&#125;;<br>std::for_each(std::execution::par, v.<span class="hljs-built_in">begin</span>(), v.<span class="hljs-built_in">end</span>(), [](<span class="hljs-type">int</span>&amp; x)&#123; x *= <span class="hljs-number">2</span>; &#125;);<br></code></pre></td></tr></table></figure>
+
+<h3 id="文件系统库（）"><a href="#文件系统库（）" class="headerlink" title="文件系统库（）"></a>文件系统库（<filesystem>）</h3><p><strong>【概念】</strong><br>标准化文件和路径操作。<br><strong>【使用场景】</strong><br>跨平台文件管理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;filesystem&gt;</span></span><br>std::filesystem::path p = <span class="hljs-string">&quot;/tmp/test.txt&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-C-20-主要新特性"><a href="#4-C-20-主要新特性" class="headerlink" title="4. C++20 主要新特性"></a>4. C++20 主要新特性</h2><h3 id="协程（coroutine）"><a href="#协程（coroutine）" class="headerlink" title="协程（coroutine）"></a>协程（coroutine）</h3><p><strong>【概念】</strong><br>支持函数挂起与恢复，简化异步编程。<br><strong>【使用场景】</strong><br>异步IO、生成器、状态机。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 需编译器支持</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;coroutine&gt;</span></span><br><span class="hljs-comment">// 示例略</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="概念（concepts）与约束（requires）"><a href="#概念（concepts）与约束（requires）" class="headerlink" title="概念（concepts）与约束（requires）"></a>概念（concepts）与约束（requires）</h3><p><strong>【概念】</strong><br>模板参数约束，提升泛型安全性。<br><strong>【使用场景】</strong><br>泛型库、模板接口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt; <span class="hljs-keyword">concept</span> Addable = <span class="hljs-built_in">requires</span>(T a, T b) &#123; a + b; &#125;;<br><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;Addable T&gt;</span><br><span class="hljs-function">T <span class="hljs-title">add</span><span class="hljs-params">(T a, T b)</span> </span>&#123; <span class="hljs-keyword">return</span> a + b; &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="范围for增强（ranges）"><a href="#范围for增强（ranges）" class="headerlink" title="范围for增强（ranges）"></a>范围for增强（ranges）</h3><p><strong>【概念】</strong><br>基于范围的算法和管道操作。<br><strong>【使用场景】</strong><br>链式数据处理、过滤、变换。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;ranges&gt;</span></span><br>vector&lt;<span class="hljs-type">int</span>&gt; v = &#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>&#125;;<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> x : v | std::views::<span class="hljs-built_in">filter</span>([](<span class="hljs-type">int</span> x)&#123;<span class="hljs-keyword">return</span> x%<span class="hljs-number">2</span>;&#125;)) cout &lt;&lt; x;<br></code></pre></td></tr></table></figure>
+
+<h3 id="三路比较（，spaceship-operator）"><a href="#三路比较（，spaceship-operator）" class="headerlink" title="三路比较（&lt;&#x3D;&gt;，spaceship operator）"></a>三路比较（&lt;&#x3D;&gt;，spaceship operator）</h3><p><strong>【概念】</strong><br>自动生成全序比较操作符。<br><strong>【使用场景】</strong><br>排序、查找、容器比较。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;compare&gt;</span></span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Point</span> &#123;<br>  <span class="hljs-type">int</span> x, y;<br>  <span class="hljs-keyword">auto</span> <span class="hljs-built_in">operator</span>&lt;=&gt;(<span class="hljs-type">const</span> Point&amp;) <span class="hljs-type">const</span> = <span class="hljs-keyword">default</span>;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="模块化（modules）"><a href="#模块化（modules）" class="headerlink" title="模块化（modules）"></a>模块化（modules）</h3><p><strong>【概念】</strong><br>替代头文件的模块系统，提升编译速度。<br><strong>【使用场景】</strong><br>大型项目、库开发。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 需编译器支持</span><br><span class="hljs-comment">// module; import; export 语法</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="consteval-constinit"><a href="#consteval-constinit" class="headerlink" title="consteval&#x2F;constinit"></a>consteval&#x2F;constinit</h3><p><strong>【概念】</strong><br>consteval：强制编译期求值；constinit：防止静态初始化顺序问题。<br><strong>【使用场景】</strong><br>编译期常量、全局变量初始化。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">consteval</span> <span class="hljs-type">int</span> <span class="hljs-title">sq</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123; <span class="hljs-keyword">return</span> x * x; &#125;<br><span class="hljs-keyword">constinit</span> <span class="hljs-type">int</span> x = <span class="hljs-number">10</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="calendar-timezone库"><a href="#calendar-timezone库" class="headerlink" title="calendar&#x2F;timezone库"></a>calendar&#x2F;timezone库</h3><p><strong>【概念】</strong><br>标准化日期和时区处理。<br><strong>【使用场景】</strong><br>跨时区应用、日志。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;chrono&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std::chrono;<br><span class="hljs-keyword">auto</span> now = system_clock::<span class="hljs-built_in">now</span>();<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>现代C++新特性极大提升了代码表达力与性能，建议结合实际项目逐步迁移和应用。 </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E6%96%B0%E7%89%B9%E6%80%A7/" class="print-no-link">#新特性</a>
+      
+        <a href="/tags/%E7%8E%B0%E4%BB%A3C/" class="print-no-link">#现代C++</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>C++11/14/17/20新特性详解</div>
+      <div>https://hwl111.github.io/2025/06/笔记/C++11-14-17-20新特性详解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/%E7%AC%94%E8%AE%B0/C++%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" title="C++并发与多线程编程">
+                        <span class="hidden-mobile">C++并发与多线程编程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
