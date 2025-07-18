@@ -1,0 +1,858 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="C++ 底层、系统与领域特定实践 一、与系统交互1. Linux&#x2F;Windows系统编程POSIX API (Linux)12345678910#include &lt;unistd.h&gt;#include &lt;fcntl.h&gt;#include &lt;sys&#x2F;types.h&gt;#include &lt;sys&#x2F;stat.h&gt;#include &lt;cstdio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++底层系统与领域特定实践">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%BA%95%E5%B1%82%E7%B3%BB%E7%BB%9F%E4%B8%8E%E9%A2%86%E5%9F%9F%E7%89%B9%E5%AE%9A%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="C++ 底层、系统与领域特定实践 一、与系统交互1. Linux&#x2F;Windows系统编程POSIX API (Linux)12345678910#include &lt;unistd.h&gt;#include &lt;fcntl.h&gt;#include &lt;sys&#x2F;types.h&gt;#include &lt;sys&#x2F;stat.h&gt;#include &lt;cstdio">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-18T14:04:10.599Z">
+<meta property="article:modified_time" content="2025-07-18T14:03:00.063Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="游戏开发">
+<meta property="article:tag" content="系统编程">
+<meta property="article:tag" content="嵌入式">
+<meta property="article:tag" content="实时系统">
+<meta property="article:tag" content="高频交易">
+<meta property="article:tag" content="FFI">
+<meta property="article:tag" content="Python绑定">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>C++底层系统与领域特定实践 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="C++底层系统与领域特定实践"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-18 22:04" pubdate>
+          2025年7月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">C++底层系统与领域特定实践</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="C-底层、系统与领域特定实践"><a href="#C-底层、系统与领域特定实践" class="headerlink" title="C++ 底层、系统与领域特定实践"></a>C++ 底层、系统与领域特定实践</h1><hr>
+<h2 id="一、与系统交互"><a href="#一、与系统交互" class="headerlink" title="一、与系统交互"></a>一、与系统交互</h2><h3 id="1-Linux-Windows系统编程"><a href="#1-Linux-Windows系统编程" class="headerlink" title="1. Linux&#x2F;Windows系统编程"></a>1. Linux&#x2F;Windows系统编程</h3><h4 id="POSIX-API-Linux"><a href="#POSIX-API-Linux" class="headerlink" title="POSIX API (Linux)"></a>POSIX API (Linux)</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdio&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> fd = <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;test.txt&quot;</span>, O_CREAT | O_WRONLY, <span class="hljs-number">0644</span>); <span class="hljs-comment">// 打开/创建文件</span><br>    <span class="hljs-built_in">write</span>(fd, <span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-number">5</span>); <span class="hljs-comment">// 写入数据</span><br>    <span class="hljs-built_in">close</span>(fd); <span class="hljs-comment">// 关闭文件</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="WinAPI-Windows"><a href="#WinAPI-Windows" class="headerlink" title="WinAPI (Windows)"></a>WinAPI (Windows)</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    HANDLE h = <span class="hljs-built_in">CreateFileA</span>(<span class="hljs-string">&quot;test.txt&quot;</span>, GENERIC_WRITE, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, <span class="hljs-literal">NULL</span>);<br>    DWORD written;<br>    <span class="hljs-built_in">WriteFile</span>(h, <span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-number">5</span>, &amp;written, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-built_in">CloseHandle</span>(h);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-文件I-O高级操作"><a href="#2-文件I-O高级操作" class="headerlink" title="2. 文件I&#x2F;O高级操作"></a>2. 文件I&#x2F;O高级操作</h3><h4 id="mmap-Linux"><a href="#mmap-Linux" class="headerlink" title="mmap (Linux)"></a>mmap (Linux)</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/mman.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> fd = <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;test.txt&quot;</span>, O_RDWR);<br>    <span class="hljs-type">char</span>* data = (<span class="hljs-type">char</span>*)<span class="hljs-built_in">mmap</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-number">4096</span>, PROT_READ|PROT_WRITE, MAP_SHARED, fd, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">strcpy</span>(data, <span class="hljs-string">&quot;mmap write&quot;</span>);<br>    <span class="hljs-built_in">munmap</span>(data, <span class="hljs-number">4096</span>);<br>    <span class="hljs-built_in">close</span>(fd);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="io-uring-Linux-5-1"><a href="#io-uring-Linux-5-1" class="headerlink" title="io_uring (Linux, 5.1+)"></a>io_uring (Linux, 5.1+)</h4><ul>
+<li>需liburing库，适合高性能异步I&#x2F;O，详见liburing官方文档。</li>
+</ul>
+<h3 id="3-网络编程"><a href="#3-网络编程" class="headerlink" title="3. 网络编程"></a>3. 网络编程</h3><h4 id="socket-POSIX"><a href="#socket-POSIX" class="headerlink" title="socket (POSIX)"></a>socket (POSIX)</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;netinet/in.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> sock = <span class="hljs-built_in">socket</span>(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br>    sockaddr_in addr&#123;&#125;;<br>    addr.sin_family = AF_INET;<br>    addr.sin_port = <span class="hljs-built_in">htons</span>(<span class="hljs-number">8080</span>);<br>    addr.sin_addr.s_addr = <span class="hljs-built_in">inet_addr</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>);<br>    <span class="hljs-built_in">connect</span>(sock, (sockaddr*)&amp;addr, <span class="hljs-built_in">sizeof</span>(addr));<br>    <span class="hljs-built_in">send</span>(sock, <span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-number">5</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">close</span>(sock);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Boost-Asio"><a href="#Boost-Asio" class="headerlink" title="Boost.Asio"></a>Boost.Asio</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;boost/asio.hpp&gt;</span></span><br><span class="hljs-keyword">using</span> boost::asio::ip::tcp;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    boost::asio::io_context io;<br>    <span class="hljs-function">tcp::socket <span class="hljs-title">s</span><span class="hljs-params">(io)</span></span>;<br>    s.<span class="hljs-built_in">connect</span>(&#123;boost::asio::ip::<span class="hljs-built_in">make_address</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>), <span class="hljs-number">8080</span>&#125;);<br>    boost::asio::<span class="hljs-built_in">write</span>(s, boost::asio::<span class="hljs-built_in">buffer</span>(<span class="hljs-string">&quot;hello&quot;</span>));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="libuv-C风格"><a href="#libuv-C风格" class="headerlink" title="libuv (C风格)"></a>libuv (C风格)</h4><ul>
+<li>适合高性能事件驱动网络，详见libuv官方文档。</li>
+</ul>
+<h3 id="4-进程间通信-IPC"><a href="#4-进程间通信-IPC" class="headerlink" title="4. 进程间通信 (IPC)"></a>4. 进程间通信 (IPC)</h3><h4 id="pipe"><a href="#pipe" class="headerlink" title="pipe"></a>pipe</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> fd[<span class="hljs-number">2</span>];<br>    <span class="hljs-built_in">pipe</span>(fd);<br>    <span class="hljs-keyword">if</span> (fork() == <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-built_in">close</span>(fd[<span class="hljs-number">1</span>]);<br>        <span class="hljs-type">char</span> buf[<span class="hljs-number">10</span>];<br>        <span class="hljs-built_in">read</span>(fd[<span class="hljs-number">0</span>], buf, <span class="hljs-number">10</span>);<br>        std::cout &lt;&lt; buf &lt;&lt; std::endl;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">close</span>(fd[<span class="hljs-number">0</span>]);<br>        <span class="hljs-built_in">write</span>(fd[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;hi&quot;</span>, <span class="hljs-number">2</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="shared-memory"><a href="#shared-memory" class="headerlink" title="shared memory"></a>shared memory</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/shm.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> shmid = <span class="hljs-built_in">shmget</span>(IPC_PRIVATE, <span class="hljs-number">1024</span>, IPC_CREAT|<span class="hljs-number">0666</span>);<br>    <span class="hljs-type">char</span>* shm = (<span class="hljs-type">char</span>*)<span class="hljs-built_in">shmat</span>(shmid, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">strcpy</span>(shm, <span class="hljs-string">&quot;shared mem&quot;</span>);<br>    <span class="hljs-built_in">shmdt</span>(shm);<br>    <span class="hljs-built_in">shmctl</span>(shmid, IPC_RMID, <span class="hljs-literal">NULL</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="message-queue"><a href="#message-queue" class="headerlink" title="message queue"></a>message queue</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/msg.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">msgbuf</span> &#123; <span class="hljs-type">long</span> mtype; <span class="hljs-type">char</span> mtext[<span class="hljs-number">100</span>]; &#125;;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> msqid = <span class="hljs-built_in">msgget</span>(IPC_PRIVATE, IPC_CREAT|<span class="hljs-number">0666</span>);<br>    msgbuf msg = &#123;<span class="hljs-number">1</span>, <span class="hljs-string">&quot;hello&quot;</span>&#125;;<br>    <span class="hljs-built_in">msgsnd</span>(msqid, &amp;msg, <span class="hljs-built_in">strlen</span>(msg.mtext)<span class="hljs-number">+1</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">msgrcv</span>(msqid, &amp;msg, <span class="hljs-built_in">sizeof</span>(msg.mtext), <span class="hljs-number">1</span>, <span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、嵌入式与实时系统"><a href="#二、嵌入式与实时系统" class="headerlink" title="二、嵌入式与实时系统"></a>二、嵌入式与实时系统</h2><h3 id="1-资源受限环境C-技巧"><a href="#1-资源受限环境C-技巧" class="headerlink" title="1. 资源受限环境C++技巧"></a>1. 资源受限环境C++技巧</h3><ul>
+<li>禁用RTTI: <code>-fno-rtti</code>，禁用异常: <code>-fno-exceptions</code>。</li>
+<li>用自定义分配器、对象池，避免动态分配。</li>
+</ul>
+<h3 id="2-实时性保障与C-特性选择"><a href="#2-实时性保障与C-特性选择" class="headerlink" title="2. 实时性保障与C++特性选择"></a>2. 实时性保障与C++特性选择</h3><ul>
+<li>避免不确定性操作（如new、虚函数、异常）。</li>
+<li>用constexpr、模板元编程提升编译期计算。</li>
+</ul>
+<h3 id="3-与硬件寄存器交互"><a href="#3-与硬件寄存器交互" class="headerlink" title="3. 与硬件寄存器交互"></a>3. 与硬件寄存器交互</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">volatile</span> <span class="hljs-type">uint32_t</span>* reg = (<span class="hljs-keyword">volatile</span> <span class="hljs-type">uint32_t</span>*)<span class="hljs-number">0x40000000</span>;<br>*reg = <span class="hljs-number">0x1234</span>; <span class="hljs-comment">// 写寄存器</span><br><span class="hljs-type">uint32_t</span> val = *reg; <span class="hljs-comment">// 读寄存器</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>内存映射I&#x2F;O常用于驱动开发。</li>
+</ul>
+<hr>
+<h2 id="三、游戏开发"><a href="#三、游戏开发" class="headerlink" title="三、游戏开发"></a>三、游戏开发</h2><h3 id="1-游戏引擎架构中的C-应用"><a href="#1-游戏引擎架构中的C-应用" class="headerlink" title="1. 游戏引擎架构中的C++应用"></a>1. 游戏引擎架构中的C++应用</h3><h4 id="ECS模式（实体-组件-系统）"><a href="#ECS模式（实体-组件-系统）" class="headerlink" title="ECS模式（实体-组件-系统）"></a>ECS模式（实体-组件-系统）</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Position</span> &#123; <span class="hljs-type">float</span> x, y; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Velocity</span> &#123; <span class="hljs-type">float</span> vx, vy; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Entity</span> &#123; <span class="hljs-type">int</span> id; &#125;;<br>std::vector&lt;Entity&gt; entities;<br>std::unordered_map&lt;<span class="hljs-type">int</span>, Position&gt; positions;<br>std::unordered_map&lt;<span class="hljs-type">int</span>, Velocity&gt; velocities;<br><span class="hljs-comment">// 系统遍历</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span>&amp; e : entities) &#123;<br>    positions[e.id].x += velocities[e.id].vx;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-资源管理与脚本绑定"><a href="#2-资源管理与脚本绑定" class="headerlink" title="2. 资源管理与脚本绑定"></a>2. 资源管理与脚本绑定</h3><ul>
+<li>用智能指针、资源池管理纹理&#x2F;模型。</li>
+<li>脚本绑定：pybind11&#x2F;Lua&#x2F;C#等。</li>
+</ul>
+<h3 id="3-游戏物理、图形、AI算法实现"><a href="#3-游戏物理、图形、AI算法实现" class="headerlink" title="3. 游戏物理、图形、AI算法实现"></a>3. 游戏物理、图形、AI算法实现</h3><ul>
+<li>物理：刚体动力学、碰撞检测（AABB、BVH）。</li>
+<li>图形：OpenGL&#x2F;Vulkan渲染管线。</li>
+<li>AI：A*寻路、行为树。</li>
+</ul>
+<h3 id="4-实时渲染优化技巧"><a href="#4-实时渲染优化技巧" class="headerlink" title="4. 实时渲染优化技巧"></a>4. 实时渲染优化技巧</h3><ul>
+<li>批量绘制、GPU实例化、延迟渲染。</li>
+</ul>
+<hr>
+<h2 id="四、金融与高频交易"><a href="#四、金融与高频交易" class="headerlink" title="四、金融与高频交易"></a>四、金融与高频交易</h2><h3 id="1-极致低延迟编程"><a href="#1-极致低延迟编程" class="headerlink" title="1. 极致低延迟编程"></a>1. 极致低延迟编程</h3><ul>
+<li>cache line对齐：<code>alignas(64) struct Data &#123; ... &#125;</code>。</li>
+<li>避免分支、用无锁结构（如环形缓冲区）。</li>
+</ul>
+<h4 id="案例：无锁环形缓冲区"><a href="#案例：无锁环形缓冲区" class="headerlink" title="案例：无锁环形缓冲区"></a>案例：无锁环形缓冲区</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;atomic&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">RingBuffer</span> &#123;<br>    std::vector&lt;<span class="hljs-type">int</span>&gt; buf;<br>    std::atomic&lt;<span class="hljs-type">size_t</span>&gt; head&#123;<span class="hljs-number">0</span>&#125;, tail&#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> size;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">RingBuffer</span>(<span class="hljs-type">size_t</span> n) : <span class="hljs-built_in">buf</span>(n), <span class="hljs-built_in">size</span>(n) &#123;&#125;<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-type">int</span> v)</span> </span>&#123;<br>        <span class="hljs-type">size_t</span> h = head.<span class="hljs-built_in">load</span>(), t = tail.<span class="hljs-built_in">load</span>();<br>        <span class="hljs-keyword">if</span> ((h<span class="hljs-number">+1</span>)%size == t) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        buf[h] = v; head.<span class="hljs-built_in">store</span>((h<span class="hljs-number">+1</span>)%size); <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">pop</span><span class="hljs-params">(<span class="hljs-type">int</span>&amp; v)</span> </span>&#123;<br>        <span class="hljs-type">size_t</span> h = head.<span class="hljs-built_in">load</span>(), t = tail.<span class="hljs-built_in">load</span>();<br>        <span class="hljs-keyword">if</span> (t == h) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        v = buf[t]; tail.<span class="hljs-built_in">store</span>((t<span class="hljs-number">+1</span>)%size); <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-内存访问模式优化"><a href="#2-内存访问模式优化" class="headerlink" title="2. 内存访问模式优化"></a>2. 内存访问模式优化</h3><ul>
+<li>顺序访问、预取、避免false sharing。</li>
+</ul>
+<hr>
+<h2 id="五、与其他语言交互"><a href="#五、与其他语言交互" class="headerlink" title="五、与其他语言交互"></a>五、与其他语言交互</h2><h3 id="1-C接口（extern-“C”）"><a href="#1-C接口（extern-“C”）" class="headerlink" title="1. C接口（extern “C”）"></a>1. C接口（extern “C”）</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> a + b; &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Python绑定（pybind11）"><a href="#2-Python绑定（pybind11）" class="headerlink" title="2. Python绑定（pybind11）"></a>2. Python绑定（pybind11）</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pybind11/pybind11.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> a + b; &#125;<br><span class="hljs-built_in">PYBIND11_MODULE</span>(mymod, m) &#123;<br>    m.<span class="hljs-built_in">def</span>(<span class="hljs-string">&quot;add&quot;</span>, &amp;add);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-Rust-FFI"><a href="#3-Rust-FFI" class="headerlink" title="3. Rust FFI"></a>3. Rust FFI</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// C++</span><br><span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span> <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-type">int</span>, <span class="hljs-type">int</span>)</span></span>;<br><span class="hljs-comment">// Rust</span><br><span class="hljs-comment">// #[link(name = &quot;mylib&quot;)]</span><br><span class="hljs-comment">// extern &quot;C&quot; &#123; fn add(a: i32, b: i32) -&gt; i32; &#125;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>如需某一部分更深入源码分析或实战案例，请随时告知！ </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" class="print-no-link">#游戏开发</a>
+      
+        <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" class="print-no-link">#系统编程</a>
+      
+        <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" class="print-no-link">#嵌入式</a>
+      
+        <a href="/tags/%E5%AE%9E%E6%97%B6%E7%B3%BB%E7%BB%9F/" class="print-no-link">#实时系统</a>
+      
+        <a href="/tags/%E9%AB%98%E9%A2%91%E4%BA%A4%E6%98%93/" class="print-no-link">#高频交易</a>
+      
+        <a href="/tags/FFI/" class="print-no-link">#FFI</a>
+      
+        <a href="/tags/Python%E7%BB%91%E5%AE%9A/" class="print-no-link">#Python绑定</a>
+      
+        <a href="/tags/Rust/" class="print-no-link">#Rust</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>C++底层系统与领域特定实践</div>
+      <div>https://hwl111.github.io/2025/07/笔记/C++底层系统与领域特定实践/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%80%A7%E8%83%BD%E8%AF%A6%E8%A7%A3/" title="C++对象模型与性能详解">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C++对象模型与性能详解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%B9%B6%E8%A1%8C%E7%AE%97%E6%B3%95%E4%B8%8E%E5%8A%A0%E9%80%9F%E5%AE%9E%E8%B7%B5/" title="C++并行算法与加速实践">
+                        <span class="hidden-mobile">C++并行算法与加速实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

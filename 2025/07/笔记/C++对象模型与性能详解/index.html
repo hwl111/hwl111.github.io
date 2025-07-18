@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="C++ 对象模型与性能详解 一、C++ 对象内存布局1. vptr&#x2F;vtbl 机制 带虚函数的类，编译器会在对象头部插入一个指向虚表（vtbl）的指针（vptr）。 虚表存储所有虚函数的地址，实现动态多态。  1234567891011struct Base &#123;    virtual void foo() &#123; &#125;    int x;&#125;;struct">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++对象模型与性能详解">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%80%A7%E8%83%BD%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="C++ 对象模型与性能详解 一、C++ 对象内存布局1. vptr&#x2F;vtbl 机制 带虚函数的类，编译器会在对象头部插入一个指向虚表（vtbl）的指针（vptr）。 虚表存储所有虚函数的地址，实现动态多态。  1234567891011struct Base &#123;    virtual void foo() &#123; &#125;    int x;&#125;;struct">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-18T14:04:10.611Z">
+<meta property="article:modified_time" content="2025-07-18T13:39:07.331Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="对象模型">
+<meta property="article:tag" content="虚函数">
+<meta property="article:tag" content="RVO">
+<meta property="article:tag" content="内联">
+<meta property="article:tag" content="性能分析">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>C++对象模型与性能详解 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="C++对象模型与性能详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-18 22:04" pubdate>
+          2025年7月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          940 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">C++对象模型与性能详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="C-对象模型与性能详解"><a href="#C-对象模型与性能详解" class="headerlink" title="C++ 对象模型与性能详解"></a>C++ 对象模型与性能详解</h1><hr>
+<h2 id="一、C-对象内存布局"><a href="#一、C-对象内存布局" class="headerlink" title="一、C++ 对象内存布局"></a>一、C++ 对象内存布局</h2><h3 id="1-vptr-vtbl-机制"><a href="#1-vptr-vtbl-机制" class="headerlink" title="1. vptr&#x2F;vtbl 机制"></a>1. vptr&#x2F;vtbl 机制</h3><ul>
+<li>带虚函数的类，编译器会在对象头部插入一个指向虚表（vtbl）的指针（vptr）。</li>
+<li>虚表存储所有虚函数的地址，实现动态多态。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Base</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-type">void</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> </span>&#123; &#125;<br>    <span class="hljs-type">int</span> x;<br>&#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Derived</span> : Base &#123;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span> </span>&#123; &#125;<br>    <span class="hljs-type">int</span> y;<br>&#125;;<br><br>Base b;<br>Derived d;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>内存布局（64位）：<ul>
+<li>Base: [vptr][x]</li>
+<li>Derived: [vptr][x][y]</li>
+</ul>
+</li>
+</ul>
+<h4 id="内存结构图"><a href="#内存结构图" class="headerlink" title="内存结构图"></a>内存结构图</h4><pre><code class=" mermaid">graph TD
+  A[&quot;Base对象&quot;] --&gt; B[&quot;vptr&quot;]
+  A --&gt; C[&quot;x&quot;]
+  D[&quot;Derived对象&quot;] --&gt; B
+  D --&gt; C
+  D --&gt; E[&quot;y&quot;]
+</code></pre>
+
+<h3 id="2-多重继承与虚继承"><a href="#2-多重继承与虚继承" class="headerlink" title="2. 多重继承与虚继承"></a>2. 多重继承与虚继承</h3><ul>
+<li>多重继承：每个基类有独立的子对象和vptr。</li>
+<li>虚继承：只保留一份虚基类子对象，子对象中有指向虚基类的指针。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">A</span> &#123; <span class="hljs-type">int</span> a; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-type">void</span> <span class="hljs-title">fa</span><span class="hljs-params">()</span> </span>&#123;&#125; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">B</span> &#123; <span class="hljs-type">int</span> b; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-type">void</span> <span class="hljs-title">fb</span><span class="hljs-params">()</span> </span>&#123;&#125; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">C</span> : A, B &#123; <span class="hljs-type">int</span> c; &#125;;<br><br>C obj;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>内存布局：</p>
+<ul>
+<li>[A::vptr][A::a][B::vptr][B::b][c]</li>
+</ul>
+</li>
+<li><p>虚继承：</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">VBase</span> &#123; <span class="hljs-type">int</span> v; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">D1</span> : <span class="hljs-keyword">virtual</span> VBase &#123; <span class="hljs-type">int</span> d1; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">D2</span> : <span class="hljs-keyword">virtual</span> VBase &#123; <span class="hljs-type">int</span> d2; &#125;;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">MI</span> : D1, D2 &#123; <span class="hljs-type">int</span> mi; &#125;;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>MI对象只包含一份VBase子对象，布局更复杂。</li>
+</ul>
+<h4 id="查看对象布局的技巧"><a href="#查看对象布局的技巧" class="headerlink" title="查看对象布局的技巧"></a>查看对象布局的技巧</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstddef&gt;</span></span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">X</span> &#123; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-type">void</span> <span class="hljs-title">f</span><span class="hljs-params">()</span></span>&#123;&#125;; <span class="hljs-type">int</span> a; &#125;;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    std::cout &lt;&lt; <span class="hljs-built_in">sizeof</span>(X) &lt;&lt; std::endl;<br>    std::cout &lt;&lt; <span class="hljs-built_in">offsetof</span>(X, a) &lt;&lt; std::endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、返回值优化（RVO）与命名返回值优化（NRVO）"><a href="#二、返回值优化（RVO）与命名返回值优化（NRVO）" class="headerlink" title="二、返回值优化（RVO）与命名返回值优化（NRVO）"></a>二、返回值优化（RVO）与命名返回值优化（NRVO）</h2><h3 id="1-RVO-NRVO-原理"><a href="#1-RVO-NRVO-原理" class="headerlink" title="1. RVO&#x2F;NRVO 原理"></a>1. RVO&#x2F;NRVO 原理</h3><ul>
+<li>RVO：编译器直接在调用者栈上构造返回值对象，避免拷贝&#x2F;移动。</li>
+<li>NRVO：返回具名局部变量时，编译器可消除拷贝。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">S</span> &#123; <span class="hljs-built_in">S</span>() &#123; <span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;ctor&quot;</span>); &#125; <span class="hljs-built_in">S</span>(<span class="hljs-type">const</span> S&amp;) &#123; <span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;copy&quot;</span>); &#125; &#125;;<br><span class="hljs-function">S <span class="hljs-title">makeS</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-keyword">return</span> <span class="hljs-built_in">S</span>(); &#125; <span class="hljs-comment">// RVO</span><br><span class="hljs-function">S <span class="hljs-title">makeS2</span><span class="hljs-params">()</span> </span>&#123; S s; <span class="hljs-keyword">return</span> s; &#125; <span class="hljs-comment">// NRVO</span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123; S s1 = <span class="hljs-built_in">makeS</span>(); S s2 = <span class="hljs-built_in">makeS2</span>(); &#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="反汇编与编译器选项"><a href="#反汇编与编译器选项" class="headerlink" title="反汇编与编译器选项"></a>反汇编与编译器选项</h4><ul>
+<li>g++ -O2 -fno-elide-constructors 可禁用RVO，观察拷贝次数。</li>
+<li>默认开启RVO&#x2F;NRVO，现代编译器几乎总能优化。</li>
+</ul>
+<hr>
+<h2 id="三、内联函数（inline）机制与优化建议"><a href="#三、内联函数（inline）机制与优化建议" class="headerlink" title="三、内联函数（inline）机制与优化建议"></a>三、内联函数（inline）机制与优化建议</h2><h3 id="1-inline-机制"><a href="#1-inline-机制" class="headerlink" title="1. inline 机制"></a>1. inline 机制</h3><ul>
+<li>inline 只是建议，最终由编译器决定是否内联。</li>
+<li>内联可减少函数调用开销，但过度内联会导致代码膨胀。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> a + b; &#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-type">int</span> x = <span class="hljs-built_in">add</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>); &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-优化建议"><a href="#2-优化建议" class="headerlink" title="2. 优化建议"></a>2. 优化建议</h3><ul>
+<li>小型、频繁调用的函数适合内联。</li>
+<li>不要内联大型、复杂函数。</li>
+<li>内联模板和lambda常见。</li>
+</ul>
+<h4 id="性能对比"><a href="#性能对比" class="headerlink" title="性能对比"></a>性能对比</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">fast</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123; <span class="hljs-keyword">return</span> x + <span class="hljs-number">1</span>; &#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">slow</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123; <span class="hljs-keyword">return</span> x + <span class="hljs-number">1</span>; &#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> sum = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000000</span>; ++i) sum += <span class="hljs-built_in">fast</span>(i);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000000</span>; ++i) sum += <span class="hljs-built_in">slow</span>(i);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>用 -O2 -fno-inline 测试性能差异。</li>
+</ul>
+<hr>
+<h2 id="四、理解-std-launder-和-std-start-lifetime-as"><a href="#四、理解-std-launder-和-std-start-lifetime-as" class="headerlink" title="四、理解 std::launder 和 std::start_lifetime_as"></a>四、理解 std::launder 和 std::start_lifetime_as</h2><h3 id="1-std-launder"><a href="#1-std-launder" class="headerlink" title="1. std::launder"></a>1. std::launder</h3><ul>
+<li>用于指针别名、placement new 后访问新对象。</li>
+<li>避免未定义行为，保证指针合法。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;new&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">X</span> &#123; <span class="hljs-type">int</span> a; &#125;;<br><span class="hljs-built_in">alignas</span>(X) <span class="hljs-type">char</span> buf[<span class="hljs-built_in">sizeof</span>(X)];<br>X* p = <span class="hljs-built_in">new</span> (buf) X&#123;<span class="hljs-number">42</span>&#125;;<br>X* q = std::<span class="hljs-built_in">launder</span>(<span class="hljs-built_in">reinterpret_cast</span>&lt;X*&gt;(buf));<br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, q-&gt;a);<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-std-start-lifetime-as-C-23"><a href="#2-std-start-lifetime-as-C-23" class="headerlink" title="2. std::start_lifetime_as (C++23)"></a>2. std::start_lifetime_as (C++23)</h3><ul>
+<li>用于在原始存储上显式开始对象生命周期。</li>
+<li>适合自定义分配器、对象池等底层场景。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;new&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstddef&gt;</span></span><br><span class="hljs-built_in">alignas</span>(<span class="hljs-type">int</span>) <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> storage[<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>)];<br><span class="hljs-type">int</span>* p = std::<span class="hljs-built_in">start_lifetime_as</span>&lt;<span class="hljs-type">int</span>&gt;(storage);<br>*p = <span class="hljs-number">123</span>;<br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, *p);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、C-代码性能瓶颈分析工具与技巧"><a href="#五、C-代码性能瓶颈分析工具与技巧" class="headerlink" title="五、C++ 代码性能瓶颈分析工具与技巧"></a>五、C++ 代码性能瓶颈分析工具与技巧</h2><h3 id="1-perf"><a href="#1-perf" class="headerlink" title="1. perf"></a>1. perf</h3><ul>
+<li>Linux 下的系统级性能分析工具。</li>
+<li>用法：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">g++ -g -O2 test.cpp -o <span class="hljs-built_in">test</span><br>perf record ./test<br>perf report<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>输出热点函数、调用栈。</li>
+</ul>
+<h3 id="2-valgrind-callgrind"><a href="#2-valgrind-callgrind" class="headerlink" title="2. valgrind&#x2F;callgrind"></a>2. valgrind&#x2F;callgrind</h3><ul>
+<li>适合分析函数调用次数、缓存命中率。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">valgrind --tool=callgrind ./test<br>callgrind_annotate callgrind.out.*<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>可用 KCachegrind 可视化分析。</li>
+</ul>
+<h3 id="3-Intel-VTune"><a href="#3-Intel-VTune" class="headerlink" title="3. Intel VTune"></a>3. Intel VTune</h3><ul>
+<li>商业级性能分析器，支持多核、矢量化、内存带宽等分析。</li>
+<li>支持 GUI 和命令行，适合深度优化。</li>
+</ul>
+<h3 id="4-性能分析实战技巧"><a href="#4-性能分析实战技巧" class="headerlink" title="4. 性能分析实战技巧"></a>4. 性能分析实战技巧</h3><ul>
+<li>先用 perf&#x2F;valgrind 找热点，再用 VTune 深挖。</li>
+<li>关注 cache miss、分支预测失败、锁竞争等。</li>
+<li>用 -O2&#x2F;-O3 编译，profile-guided optimization (PGO) 可进一步提升。</li>
+<li>结合源码、汇编、工具报告定位瓶颈。</li>
+</ul>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B/" class="print-no-link">#对象模型</a>
+      
+        <a href="/tags/%E8%99%9A%E5%87%BD%E6%95%B0/" class="print-no-link">#虚函数</a>
+      
+        <a href="/tags/RVO/" class="print-no-link">#RVO</a>
+      
+        <a href="/tags/%E5%86%85%E8%81%94/" class="print-no-link">#内联</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" class="print-no-link">#性能分析</a>
+      
+        <a href="/tags/%E5%B7%A5%E5%85%B7/" class="print-no-link">#工具</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>C++对象模型与性能详解</div>
+      <div>https://hwl111.github.io/2025/07/笔记/C++对象模型与性能详解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E9%AB%98%E7%BA%A7%E5%B9%B6%E5%8F%91%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" title="C++高级并发机制详解">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C++高级并发机制详解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%BA%95%E5%B1%82%E7%B3%BB%E7%BB%9F%E4%B8%8E%E9%A2%86%E5%9F%9F%E7%89%B9%E5%AE%9A%E5%AE%9E%E8%B7%B5/" title="C++底层系统与领域特定实践">
+                        <span class="hidden-mobile">C++底层系统与领域特定实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

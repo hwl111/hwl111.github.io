@@ -1,0 +1,907 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="C++ 工程实践与性能优化 一、C++项目结构组织与模块划分实践1. 典型目录结构123456789101112project&#x2F;  CMakeLists.txt  include&#x2F;    project&#x2F;      foo.h      bar.h  src&#x2F;    foo.cpp    bar.cpp  tests&#x2F;    test_foo.cpp  third_party&#x2F;   include">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++工程实践与性能优化">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5%E4%B8%8E%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="C++ 工程实践与性能优化 一、C++项目结构组织与模块划分实践1. 典型目录结构123456789101112project&#x2F;  CMakeLists.txt  include&#x2F;    project&#x2F;      foo.h      bar.h  src&#x2F;    foo.cpp    bar.cpp  tests&#x2F;    test_foo.cpp  third_party&#x2F;   include">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-18T14:04:10.619Z">
+<meta property="article:modified_time" content="2025-07-18T13:48:07.081Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="工程实践">
+<meta property="article:tag" content="构建系统">
+<meta property="article:tag" content="CMake">
+<meta property="article:tag" content="Bazel">
+<meta property="article:tag" content="依赖管理">
+<meta property="article:tag" content="跨平台">
+<meta property="article:tag" content="调试">
+<meta property="article:tag" content="性能优化">
+<meta property="article:tag" content="SIMD">
+<meta property="article:tag" content="PIMPL">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>C++工程实践与性能优化 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="C++工程实践与性能优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-18 22:04" pubdate>
+          2025年7月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">C++工程实践与性能优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="C-工程实践与性能优化"><a href="#C-工程实践与性能优化" class="headerlink" title="C++ 工程实践与性能优化"></a>C++ 工程实践与性能优化</h1><hr>
+<h2 id="一、C-项目结构组织与模块划分实践"><a href="#一、C-项目结构组织与模块划分实践" class="headerlink" title="一、C++项目结构组织与模块划分实践"></a>一、C++项目结构组织与模块划分实践</h2><h3 id="1-典型目录结构"><a href="#1-典型目录结构" class="headerlink" title="1. 典型目录结构"></a>1. 典型目录结构</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs stylus">project/<br>  CMakeLists<span class="hljs-selector-class">.txt</span><br>  include/<br>    project/<br>      foo<span class="hljs-selector-class">.h</span><br>      bar<span class="hljs-selector-class">.h</span><br>  <span class="hljs-attribute">src</span>/<br>    foo<span class="hljs-selector-class">.cpp</span><br>    bar<span class="hljs-selector-class">.cpp</span><br>  tests/<br>    test_foo<span class="hljs-selector-class">.cpp</span><br>  third_party/<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>include&#x2F; 头文件，src&#x2F; 源文件，tests&#x2F; 单元测试，third_party&#x2F; 外部依赖。</li>
+<li>建议每个模块独立头&#x2F;源文件，接口与实现分离。</li>
+</ul>
+<h3 id="2-分层设计案例"><a href="#2-分层设计案例" class="headerlink" title="2. 分层设计案例"></a>2. 分层设计案例</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// include/project/foo.h</span><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span><br><span class="hljs-keyword">namespace</span> project &#123; <span class="hljs-keyword">class</span> <span class="hljs-title class_">Foo</span> &#123; <span class="hljs-keyword">public</span>: <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">do_something</span><span class="hljs-params">()</span></span>; &#125;; &#125;<br><br><span class="hljs-comment">// src/foo.cpp</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;project/foo.h&quot;</span></span><br><span class="hljs-type">void</span> project::Foo::<span class="hljs-built_in">do_something</span>() &#123; <span class="hljs-comment">/* ... */</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、CMake-Bazel现代构建系统高级用法与最佳实践"><a href="#二、CMake-Bazel现代构建系统高级用法与最佳实践" class="headerlink" title="二、CMake&#x2F;Bazel现代构建系统高级用法与最佳实践"></a>二、CMake&#x2F;Bazel现代构建系统高级用法与最佳实践</h2><h3 id="1-CMake-跨平台配置"><a href="#1-CMake-跨平台配置" class="headerlink" title="1. CMake 跨平台配置"></a>1. CMake 跨平台配置</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.15</span>)<br><span class="hljs-keyword">project</span>(MyApp)<br><span class="hljs-keyword">add_library</span>(core src/foo.cpp src/bar.cpp)<br><span class="hljs-keyword">target_include_directories</span>(core PUBLIC <span class="hljs-keyword">include</span>)<br><span class="hljs-keyword">add_executable</span>(main src/main.cpp)<br><span class="hljs-keyword">target_link_libraries</span>(main core)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 target_xxx 接口，避免全局变量污染。</li>
+<li>支持多平台（Windows&#x2F;Linux&#x2F;macOS），条件编译：</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">if</span>(WIN32)<br>  <span class="hljs-keyword">target_compile_definitions</span>(core PRIVATE PLATFORM_WINDOWS)<br><span class="hljs-keyword">endif</span>()<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Bazel-基本用法"><a href="#2-Bazel-基本用法" class="headerlink" title="2. Bazel 基本用法"></a>2. Bazel 基本用法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># BUILD</span><br>cc_library(<br>  name = <span class="hljs-string">&quot;core&quot;</span>,<br>  srcs = [<span class="hljs-string">&quot;foo.cpp&quot;</span>, <span class="hljs-string">&quot;bar.cpp&quot;</span>],<br>  hdrs = [<span class="hljs-string">&quot;foo.h&quot;</span>, <span class="hljs-string">&quot;bar.h&quot;</span>],<br>  includes = [<span class="hljs-string">&quot;include&quot;</span>],<br>)<br>cc_binary(<br>  name = <span class="hljs-string">&quot;main&quot;</span>,<br>  srcs = [<span class="hljs-string">&quot;main.cpp&quot;</span>],<br>  deps = [<span class="hljs-string">&quot;:core&quot;</span>],<br>)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、接口设计原则在C-中的应用（SOLID-RAII-PIMPL）"><a href="#三、接口设计原则在C-中的应用（SOLID-RAII-PIMPL）" class="headerlink" title="三、接口设计原则在C++中的应用（SOLID, RAII, PIMPL）"></a>三、接口设计原则在C++中的应用（SOLID, RAII, PIMPL）</h2><h3 id="1-SOLID原则"><a href="#1-SOLID原则" class="headerlink" title="1. SOLID原则"></a>1. SOLID原则</h3><ul>
+<li>单一职责、开放封闭、里氏替换、接口隔离、依赖倒置。</li>
+<li>C++接口用纯虚类、模板、RAII等实现。</li>
+</ul>
+<h3 id="2-RAII与资源管理"><a href="#2-RAII与资源管理" class="headerlink" title="2. RAII与资源管理"></a>2. RAII与资源管理</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">File</span> &#123;<br>    FILE* fp;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">File</span>(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* name) : <span class="hljs-built_in">fp</span>(<span class="hljs-built_in">fopen</span>(name, <span class="hljs-string">&quot;r&quot;</span>)) &#123;&#125;<br>    ~<span class="hljs-built_in">File</span>() &#123; <span class="hljs-keyword">if</span> (fp) <span class="hljs-built_in">fclose</span>(fp); &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-PIMPL惯用法详解"><a href="#3-PIMPL惯用法详解" class="headerlink" title="3. PIMPL惯用法详解"></a>3. PIMPL惯用法详解</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// foo.h</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Foo</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">Foo</span>();<br>    ~<span class="hljs-built_in">Foo</span>();<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">do_something</span><span class="hljs-params">()</span></span>;<br><span class="hljs-keyword">private</span>:<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Impl</span>;<br>    Impl* pImpl;<br>&#125;;<br><span class="hljs-comment">// foo.cpp</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Foo</span>::Impl &#123; <span class="hljs-type">int</span> data; &#125;;<br>Foo::<span class="hljs-built_in">Foo</span>() : <span class="hljs-built_in">pImpl</span>(<span class="hljs-keyword">new</span> Impl) &#123;&#125;<br>Foo::~<span class="hljs-built_in">Foo</span>() &#123; <span class="hljs-keyword">delete</span> pImpl; &#125;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Foo::do_something</span><span class="hljs-params">()</span> </span>&#123; pImpl-&gt;data = <span class="hljs-number">42</span>; &#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：降低编译依赖，提升二进制兼容性。</li>
+<li>缺点：多一次间接，略有性能损耗。</li>
+</ul>
+<hr>
+<h2 id="四、依赖管理（vcpkg-conan-build2）"><a href="#四、依赖管理（vcpkg-conan-build2）" class="headerlink" title="四、依赖管理（vcpkg, conan, build2）"></a>四、依赖管理（vcpkg, conan, build2）</h2><h3 id="1-vcpkg"><a href="#1-vcpkg" class="headerlink" title="1. vcpkg"></a>1. vcpkg</h3><ul>
+<li>微软开源，跨平台包管理。</li>
+<li>用法：<code>vcpkg install boost</code></li>
+<li>CMake集成：</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">find_package</span>(boost CONFIG REQUIRED)<br><span class="hljs-keyword">target_link_libraries</span>(main PRIVATE boost::boost)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-conan"><a href="#2-conan" class="headerlink" title="2. conan"></a>2. conan</h3><ul>
+<li>Python实现，支持多版本、二进制包。</li>
+<li>用法：<code>conan install . --build=missing</code></li>
+<li>CMake集成：</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">include</span>(<span class="hljs-variable">$&#123;CMAKE_BINARY_DIR&#125;</span>/conanbuildinfo.cmake)<br>conan_basic_setup()<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-build2"><a href="#3-build2" class="headerlink" title="3. build2"></a>3. build2</h3><ul>
+<li>现代C++构建+包管理一体化。</li>
+<li>用法：<code>b install libfoo</code></li>
+</ul>
+<hr>
+<h2 id="五、跨平台开发挑战与解决方案"><a href="#五、跨平台开发挑战与解决方案" class="headerlink" title="五、跨平台开发挑战与解决方案"></a>五、跨平台开发挑战与解决方案</h2><h3 id="1-平台差异"><a href="#1-平台差异" class="headerlink" title="1. 平台差异"></a>1. 平台差异</h3><ul>
+<li>路径分隔符、文件权限、动态库加载、线程API等。</li>
+<li>解决：用CMake条件编译、抽象平台相关代码。</li>
+</ul>
+<h3 id="2-CMake跨平台配置"><a href="#2-CMake跨平台配置" class="headerlink" title="2. CMake跨平台配置"></a>2. CMake跨平台配置</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">if</span>(WIN32)<br>  <span class="hljs-comment"># Windows特有设置</span><br><span class="hljs-keyword">elseif</span>(APPLE)<br>  <span class="hljs-comment"># macOS特有设置</span><br><span class="hljs-keyword">else</span>()<br>  <span class="hljs-comment"># Linux特有设置</span><br><span class="hljs-keyword">endif</span>()<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、使用CMake管理大型跨平台C-项目的实战经验"><a href="#六、使用CMake管理大型跨平台C-项目的实战经验" class="headerlink" title="六、使用CMake管理大型跨平台C++项目的实战经验"></a>六、使用CMake管理大型跨平台C++项目的实战经验</h2><h3 id="1-完整CMakeLists-txt案例"><a href="#1-完整CMakeLists-txt案例" class="headerlink" title="1. 完整CMakeLists.txt案例"></a>1. 完整CMakeLists.txt案例</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.20</span>)<br><span class="hljs-keyword">project</span>(BigProject)<br><span class="hljs-keyword">add_subdirectory</span>(core)<br><span class="hljs-keyword">add_subdirectory</span>(app)<br><span class="hljs-keyword">add_subdirectory</span>(tests)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>每个模块独立CMakeLists.txt，支持可选组件、自动测试。</li>
+<li>建议用target_xxx接口，避免全局变量。</li>
+</ul>
+<hr>
+<h2 id="七、PIMPL惯用法详解：降低编译依赖与二进制兼容性"><a href="#七、PIMPL惯用法详解：降低编译依赖与二进制兼容性" class="headerlink" title="七、PIMPL惯用法详解：降低编译依赖与二进制兼容性"></a>七、PIMPL惯用法详解：降低编译依赖与二进制兼容性</h2><h3 id="1-源码与优缺点"><a href="#1-源码与优缺点" class="headerlink" title="1. 源码与优缺点"></a>1. 源码与优缺点</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// bar.h</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Bar</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">Bar</span>();<br>    ~<span class="hljs-built_in">Bar</span>();<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">do_work</span><span class="hljs-params">()</span></span>;<br><span class="hljs-keyword">private</span>:<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Impl</span>;<br>    Impl* pImpl;<br>&#125;;<br><span class="hljs-comment">// bar.cpp</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Bar</span>::Impl &#123; <span class="hljs-type">int</span> state; &#125;;<br>Bar::<span class="hljs-built_in">Bar</span>() : <span class="hljs-built_in">pImpl</span>(<span class="hljs-keyword">new</span> Impl) &#123;&#125;<br>Bar::~<span class="hljs-built_in">Bar</span>() &#123; <span class="hljs-keyword">delete</span> pImpl; &#125;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Bar::do_work</span><span class="hljs-params">()</span> </span>&#123; pImpl-&gt;state = <span class="hljs-number">100</span>; &#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>只需重新编译实现文件，接口二进制兼容。</li>
+</ul>
+<hr>
+<h2 id="八、高级调试与诊断"><a href="#八、高级调试与诊断" class="headerlink" title="八、高级调试与诊断"></a>八、高级调试与诊断</h2><h3 id="1-gdb-lldb命令与core-dump分析"><a href="#1-gdb-lldb命令与core-dump分析" class="headerlink" title="1. gdb&#x2F;lldb命令与core dump分析"></a>1. gdb&#x2F;lldb命令与core dump分析</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">gdb ./main core<br>bt <span class="hljs-comment"># 打印调用栈</span><br>frame 2<br><span class="hljs-built_in">print</span> var<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Sanitizers检测"><a href="#2-Sanitizers检测" class="headerlink" title="2. Sanitizers检测"></a>2. Sanitizers检测</h3><ul>
+<li>AddressSanitizer: 检查越界、悬垂指针。</li>
+<li>ThreadSanitizer: 检查数据竞争。</li>
+<li>MemorySanitizer: 检查未初始化。</li>
+<li>UndefinedBehaviorSanitizer: 检查未定义行为。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">g++ -fsanitize=address -g main.cpp<br>./a.out<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-静态分析工具集成"><a href="#3-静态分析工具集成" class="headerlink" title="3. 静态分析工具集成"></a>3. 静态分析工具集成</h3><ul>
+<li>clang-tidy, Cppcheck, PVS-Studio。</li>
+<li>CMake集成：</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">set</span>(CMAKE_CXX_CLANG_TIDY <span class="hljs-string">&quot;clang-tidy&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-性能剖析工具"><a href="#4-性能剖析工具" class="headerlink" title="4. 性能剖析工具"></a>4. 性能剖析工具</h3><ul>
+<li>perf, vtune, valgrind&#x2F;callgrind, gprof。</li>
+<li>用法与结果解读见前文。</li>
+</ul>
+<hr>
+<h2 id="九、性能优化实践"><a href="#九、性能优化实践" class="headerlink" title="九、性能优化实践"></a>九、性能优化实践</h2><h3 id="1-CPU缓存友好性编程"><a href="#1-CPU缓存友好性编程" class="headerlink" title="1. CPU缓存友好性编程"></a>1. CPU缓存友好性编程</h3><ul>
+<li>优先顺序访问、结构体紧凑、避免链表。</li>
+</ul>
+<h4 id="案例：矩阵乘法优化"><a href="#案例：矩阵乘法优化" class="headerlink" title="案例：矩阵乘法优化"></a>案例：矩阵乘法优化</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;chrono&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">matmul</span><span class="hljs-params">(<span class="hljs-type">const</span> std::vector&lt;std::vector&lt;<span class="hljs-type">float</span>&gt;&gt;&amp; A,</span></span><br><span class="hljs-params"><span class="hljs-function">            <span class="hljs-type">const</span> std::vector&lt;std::vector&lt;<span class="hljs-type">float</span>&gt;&gt;&amp; B,</span></span><br><span class="hljs-params"><span class="hljs-function">            std::vector&lt;std::vector&lt;<span class="hljs-type">float</span>&gt;&gt;&amp; C)</span> </span>&#123;<br>    <span class="hljs-type">int</span> N = A.<span class="hljs-built_in">size</span>();<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; N; ++i)<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; N; ++k)<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; N; ++j)<br>                C[i][j] += A[i][k] * B[k][j];<br>&#125;<br><span class="hljs-comment">// 优化：块状乘法（cache blocking）</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-SIMD向量化优化（SSE-AVX）"><a href="#2-SIMD向量化优化（SSE-AVX）" class="headerlink" title="2. SIMD向量化优化（SSE&#x2F;AVX）"></a>2. SIMD向量化优化（SSE&#x2F;AVX）</h3><h4 id="案例：AVX2加速图像处理"><a href="#案例：AVX2加速图像处理" class="headerlink" title="案例：AVX2加速图像处理"></a>案例：AVX2加速图像处理</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;immintrin.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">add_avx2</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span>* a, <span class="hljs-type">const</span> <span class="hljs-type">float</span>* b, <span class="hljs-type">float</span>* out, <span class="hljs-type">int</span> n)</span> </span>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (; i + <span class="hljs-number">8</span> &lt;= n; i += <span class="hljs-number">8</span>) &#123;<br>        __m256 va = _mm256_loadu_ps(a + i);<br>        __m256 vb = _mm256_loadu_ps(b + i);<br>        __m256 vc = _mm256_add_ps(va, vb);<br>        _mm256_storeu_ps(out + i, vc);<br>    &#125;<br>    <span class="hljs-keyword">for</span> (; i &lt; n; ++i) out[i] = a[i] + b[i];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-减少动态内存分配"><a href="#3-减少动态内存分配" class="headerlink" title="3. 减少动态内存分配"></a>3. 减少动态内存分配</h3><ul>
+<li>用对象池、自定义分配器、预分配vector等。</li>
+</ul>
+<h3 id="4-虚函数调用优化"><a href="#4-虚函数调用优化" class="headerlink" title="4. 虚函数调用优化"></a>4. 虚函数调用优化</h3><ul>
+<li>用CRTP、函数对象、内联等替代虚函数。</li>
+</ul>
+<h3 id="5-分支预测优化"><a href="#5-分支预测优化" class="headerlink" title="5. 分支预测优化"></a>5. 分支预测优化</h3><ul>
+<li>likely&#x2F;unlikely宏，GCC&#x2F;Clang: <code>__builtin_expect</code>。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">if</span> (__builtin_expect(x &gt; <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)) &#123; <span class="hljs-comment">/* ... */</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>如需某一部分更深入源码分析或实战案例，请随时告知！ </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C++</a>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="print-no-link">#工程实践</a>
+      
+        <a href="/tags/%E6%9E%84%E5%BB%BA%E7%B3%BB%E7%BB%9F/" class="print-no-link">#构建系统</a>
+      
+        <a href="/tags/CMake/" class="print-no-link">#CMake</a>
+      
+        <a href="/tags/Bazel/" class="print-no-link">#Bazel</a>
+      
+        <a href="/tags/%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86/" class="print-no-link">#依赖管理</a>
+      
+        <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/" class="print-no-link">#跨平台</a>
+      
+        <a href="/tags/%E8%B0%83%E8%AF%95/" class="print-no-link">#调试</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="print-no-link">#性能优化</a>
+      
+        <a href="/tags/SIMD/" class="print-no-link">#SIMD</a>
+      
+        <a href="/tags/PIMPL/" class="print-no-link">#PIMPL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>C++工程实践与性能优化</div>
+      <div>https://hwl111.github.io/2025/07/笔记/C++工程实践与性能优化/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E8%AF%A6%E8%A7%A3/" title="C++内存管理详解">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C++内存管理详解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E9%AB%98%E7%BA%A7%E5%B9%B6%E5%8F%91%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" title="C++高级并发机制详解">
+                        <span class="hidden-mobile">C++高级并发机制详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

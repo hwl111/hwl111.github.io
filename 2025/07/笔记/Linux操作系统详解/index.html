@@ -1,0 +1,932 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hwl">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Linux 操作系统详解 一、Linux 简介Linux 是一种自由和开放源代码的类 Unix 操作系统。最初由 Linus Torvalds 于 1991 年开发，采用 GPL（GNU 通用公共许可证）协议。Linux 具有高度的可定制性、稳定性和安全性，广泛应用于服务器、桌面、嵌入式系统、移动设备等领域。 主要特点：  开源免费，拥有庞大的社区支持 多用户、多任务、支持多种硬件平台 稳定性高，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux操作系统详解">
+<meta property="og:url" content="https://hwl111.github.io/2025/07/%E7%AC%94%E8%AE%B0/Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Infinite Loop">
+<meta property="og:description" content="Linux 操作系统详解 一、Linux 简介Linux 是一种自由和开放源代码的类 Unix 操作系统。最初由 Linus Torvalds 于 1991 年开发，采用 GPL（GNU 通用公共许可证）协议。Linux 具有高度的可定制性、稳定性和安全性，广泛应用于服务器、桌面、嵌入式系统、移动设备等领域。 主要特点：  开源免费，拥有庞大的社区支持 多用户、多任务、支持多种硬件平台 稳定性高，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-18T14:04:10.629Z">
+<meta property="article:modified_time" content="2025-07-18T13:41:19.426Z">
+<meta property="article:author" content="hwl">
+<meta property="article:tag" content="内存管理">
+<meta property="article:tag" content="性能">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="内核">
+<meta property="article:tag" content="进程管理">
+<meta property="article:tag" content="文件系统">
+<meta property="article:tag" content="网络">
+<meta property="article:tag" content="安全">
+<meta property="article:tag" content="C++对照">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Linux操作系统详解 - Infinite Loop</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hwl111.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","app_key":"wU4AutBKes8CM4zNInqzhHoQ","server_url":"https://zzxsvjdi.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pixel Peotry</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux操作系统详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-18 22:04" pubdate>
+          2025年7月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux操作系统详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Linux-操作系统详解"><a href="#Linux-操作系统详解" class="headerlink" title="Linux 操作系统详解"></a>Linux 操作系统详解</h1><hr>
+<h2 id="一、Linux-简介"><a href="#一、Linux-简介" class="headerlink" title="一、Linux 简介"></a>一、Linux 简介</h2><p>Linux 是一种自由和开放源代码的类 Unix 操作系统。最初由 Linus Torvalds 于 1991 年开发，采用 GPL（GNU 通用公共许可证）协议。Linux 具有高度的可定制性、稳定性和安全性，广泛应用于服务器、桌面、嵌入式系统、移动设备等领域。</p>
+<p><strong>主要特点：</strong></p>
+<ul>
+<li>开源免费，拥有庞大的社区支持</li>
+<li>多用户、多任务、支持多种硬件平台</li>
+<li>稳定性高，安全性强，适合服务器环境</li>
+<li>丰富的开发工具和软件生态</li>
+</ul>
+<hr>
+<h2 id="二、体系结构"><a href="#二、体系结构" class="headerlink" title="二、体系结构"></a>二、体系结构</h2><p>Linux 操作系统采用分层结构，主要分为内核空间和用户空间。</p>
+<h3 id="1-内核空间（Kernel-Space）"><a href="#1-内核空间（Kernel-Space）" class="headerlink" title="1. 内核空间（Kernel Space）"></a>1. 内核空间（Kernel Space）</h3><ul>
+<li>负责管理硬件资源、进程调度、内存分配、文件系统、网络通信等。</li>
+<li>Linux 内核为单内核（Monolithic Kernel），所有核心功能都在内核空间实现。</li>
+<li>支持可加载内核模块（LKM），可动态扩展内核功能。</li>
+</ul>
+<h3 id="2-用户空间（User-Space）"><a href="#2-用户空间（User-Space）" class="headerlink" title="2. 用户空间（User Space）"></a>2. 用户空间（User Space）</h3><ul>
+<li>运行用户应用程序，通过系统调用与内核交互。</li>
+<li>用户空间与内核空间隔离，保证系统安全和稳定。</li>
+</ul>
+<h3 id="3-系统调用接口（System-Call-Interface）"><a href="#3-系统调用接口（System-Call-Interface）" class="headerlink" title="3. 系统调用接口（System Call Interface）"></a>3. 系统调用接口（System Call Interface）</h3><ul>
+<li>用户程序通过系统调用（如 open、read、write、fork 等）请求内核服务。</li>
+<li>系统调用是用户空间与内核空间的桥梁。</li>
+</ul>
+<h4 id="原理结构图"><a href="#原理结构图" class="headerlink" title="原理结构图"></a>原理结构图</h4><pre><code class=" mermaid">graph TD
+  A[&quot;用户空间&quot;] -- 系统调用 --&gt; B[&quot;内核空间&quot;]
+  B -- 管理 --&gt; C[&quot;硬件&quot;]
+  B -- 提供接口 --&gt; D[&quot;设备驱动&quot;]
+  B -- 文件操作 --&gt; E[&quot;文件系统&quot;]
+  B -- 进程调度 --&gt; F[&quot;进程管理&quot;]
+  B -- 内存分配 --&gt; G[&quot;内存管理&quot;]
+  B -- 网络通信 --&gt; H[&quot;网络协议栈&quot;]
+</code></pre>
+
+<hr>
+<h2 id="三、内核（Kernel）与-C-并发原理对照"><a href="#三、内核（Kernel）与-C-并发原理对照" class="headerlink" title="三、内核（Kernel）与 C++ 并发原理对照"></a>三、内核（Kernel）与 C++ 并发原理对照</h2><h3 id="C-多线程与同步机制"><a href="#C-多线程与同步机制" class="headerlink" title="C++ 多线程与同步机制"></a>C++ 多线程与同步机制</h3><h4 id="1-线程创建与管理"><a href="#1-线程创建与管理" class="headerlink" title="1. 线程创建与管理"></a>1. 线程创建与管理</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">worker</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> </span>&#123;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;Thread &quot;</span> &lt;&lt; id &lt;&lt; <span class="hljs-string">&quot; running\n&quot;</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-function">std::thread <span class="hljs-title">t1</span><span class="hljs-params">(worker, <span class="hljs-number">1</span>)</span></span>;<br>    <span class="hljs-function">std::thread <span class="hljs-title">t2</span><span class="hljs-params">(worker, <span class="hljs-number">2</span>)</span></span>;<br>    t<span class="hljs-number">1.</span><span class="hljs-built_in">join</span>();<br>    t<span class="hljs-number">2.</span><span class="hljs-built_in">join</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; C++ 用 std::thread 创建线程，类似内核的 task_struct 和调度。</p>
+<h4 id="2-互斥锁与条件变量"><a href="#2-互斥锁与条件变量" class="headerlink" title="2. 互斥锁与条件变量"></a>2. 互斥锁与条件变量</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mutex&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;condition_variable&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;queue&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br>std::mutex mtx;<br>std::condition_variable cv;<br>std::queue&lt;<span class="hljs-type">int</span>&gt; q;<br><span class="hljs-type">bool</span> done = <span class="hljs-literal">false</span>;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">producer</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; ++i) &#123;<br>        <span class="hljs-function">std::unique_lock&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mtx)</span></span>;<br>        q.<span class="hljs-built_in">push</span>(i);<br>        cv.<span class="hljs-built_in">notify_one</span>();<br>    &#125;<br>    <span class="hljs-function">std::unique_lock&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mtx)</span></span>;<br>    done = <span class="hljs-literal">true</span>;<br>    cv.<span class="hljs-built_in">notify_all</span>();<br>&#125;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">consumer</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>        <span class="hljs-function">std::unique_lock&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mtx)</span></span>;<br>        cv.<span class="hljs-built_in">wait</span>(lock, []&#123; <span class="hljs-keyword">return</span> !q.<span class="hljs-built_in">empty</span>() || done; &#125;);<br>        <span class="hljs-keyword">if</span> (!q.<span class="hljs-built_in">empty</span>()) &#123;<br>            <span class="hljs-type">int</span> val = q.<span class="hljs-built_in">front</span>(); q.<span class="hljs-built_in">pop</span>();<br>            std::cout &lt;&lt; <span class="hljs-string">&quot;Consumed: &quot;</span> &lt;&lt; val &lt;&lt; std::endl;<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (done) &#123;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-function">std::thread <span class="hljs-title">p</span><span class="hljs-params">(producer)</span>, <span class="hljs-title">c</span><span class="hljs-params">(consumer)</span></span>;<br>    p.<span class="hljs-built_in">join</span>(); c.<span class="hljs-built_in">join</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; std::mutex 和 std::condition_variable 对应内核的 spinlock&#x2F;semaphore&#x2F;wait queue。</p>
+<h4 id="3-原子操作"><a href="#3-原子操作" class="headerlink" title="3. 原子操作"></a>3. 原子操作</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;atomic&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function">std::atomic&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">counter</span><span class="hljs-params">(<span class="hljs-number">0</span>)</span></span>;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">add</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000</span>; ++i) counter++;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-function">std::thread <span class="hljs-title">t1</span><span class="hljs-params">(add)</span>, <span class="hljs-title">t2</span><span class="hljs-params">(add)</span></span>;<br>    t<span class="hljs-number">1.</span><span class="hljs-built_in">join</span>(); t<span class="hljs-number">2.</span><span class="hljs-built_in">join</span>();<br>    std::cout &lt;&lt; counter &lt;&lt; std::endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; std::atomic 对应内核的 atomic_t，保证并发安全。</p>
+<hr>
+<h2 id="四、进程管理与-C-线程调度对照"><a href="#四、进程管理与-C-线程调度对照" class="headerlink" title="四、进程管理与 C++ 线程调度对照"></a>四、进程管理与 C++ 线程调度对照</h2><h3 id="C-线程优先级与调度"><a href="#C-线程优先级与调度" class="headerlink" title="C++ 线程优先级与调度"></a>C++ 线程优先级与调度</h3><h4 id="1-设置线程优先级（POSIX-接口）"><a href="#1-设置线程优先级（POSIX-接口）" class="headerlink" title="1. 设置线程优先级（POSIX 接口）"></a>1. 设置线程优先级（POSIX 接口）</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sched.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">task</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123; <span class="hljs-comment">/* do work */</span> &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-function">std::thread <span class="hljs-title">t</span><span class="hljs-params">(task)</span></span>;<br>    sched_param sch_params;<br>    sch_params.sched_priority = <span class="hljs-number">20</span>;<br>    <span class="hljs-built_in">pthread_setschedparam</span>(t.<span class="hljs-built_in">native_handle</span>(), SCHED_RR, &amp;sch_params);<br>    t.<span class="hljs-built_in">join</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; C++ 标准库不直接支持优先级，需用 pthread 接口，类似内核 SCHED_RR&#x2F;SCHED_FIFO。</p>
+<h4 id="2-C-与内核调度对比"><a href="#2-C-与内核调度对比" class="headerlink" title="2. C++ 与内核调度对比"></a>2. C++ 与内核调度对比</h4><ul>
+<li>C++ 线程调度依赖操作系统，不能像内核 CFS 那样精细控制。</li>
+<li>但可通过 native_handle 与系统调度器交互。</li>
+</ul>
+<hr>
+<h2 id="五、内存管理"><a href="#五、内存管理" class="headerlink" title="五、内存管理"></a>五、内存管理</h2><h3 id="1-虚拟内存"><a href="#1-虚拟内存" class="headerlink" title="1. 虚拟内存"></a>1. 虚拟内存</h3><ul>
+<li>每个进程拥有独立的虚拟地址空间。</li>
+<li>通过页表将虚拟地址映射到物理内存。</li>
+</ul>
+<h4 id="源码分析：Linux-内核内存分配（伙伴系统与-slab-分配器）"><a href="#源码分析：Linux-内核内存分配（伙伴系统与-slab-分配器）" class="headerlink" title="源码分析：Linux 内核内存分配（伙伴系统与 slab 分配器）"></a>源码分析：Linux 内核内存分配（伙伴系统与 slab 分配器）</h4><ul>
+<li><strong>伙伴系统（Buddy System）</strong>：用于管理大块物理内存。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// mm/page_alloc.c</span><br><span class="hljs-type">void</span> *<span class="hljs-title function_">alloc_pages</span><span class="hljs-params">(<span class="hljs-type">gfp_t</span> gfp_mask, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> order)</span> &#123;<br>    <span class="hljs-comment">// ...</span><br>    page = __alloc_pages(gfp_mask, order, ...);<br>    <span class="hljs-comment">// ...</span><br>    <span class="hljs-keyword">return</span> page_address(page);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>slab 分配器</strong>：用于高效分配小对象。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// mm/slab.c</span><br><span class="hljs-type">void</span> *<span class="hljs-title function_">kmem_cache_alloc</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> kmem_cache *cachep, <span class="hljs-type">gfp_t</span> flags)</span> &#123;<br>    <span class="hljs-comment">// ...</span><br>    objp = slab_alloc(cachep, flags, ...);<br>    <span class="hljs-comment">// ...</span><br>    <span class="hljs-keyword">return</span> objp;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="命令实操与详细用法"><a href="#命令实操与详细用法" class="headerlink" title="命令实操与详细用法"></a>命令实操与详细用法</h4><ul>
+<li><code>free</code>：显示内存和 swap 使用情况<ul>
+<li><code>free -h</code>：以人类可读方式显示</li>
+</ul>
+</li>
+<li><code>vmstat</code>：显示虚拟内存、进程、CPU 等统计信息<ul>
+<li><code>vmstat 1</code>：每秒刷新一次</li>
+</ul>
+</li>
+<li><code>top</code>&#x2F;<code>htop</code>：实时监控内存使用</li>
+<li><code>cat /proc/meminfo</code>：查看详细内存信息</li>
+</ul>
+<p><strong>实操示例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">free -h<br>vmstat 1<br><span class="hljs-built_in">cat</span> /proc/meminfo<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、C-与内核内存管理对照"><a href="#六、C-与内核内存管理对照" class="headerlink" title="六、C++ 与内核内存管理对照"></a>六、C++ 与内核内存管理对照</h2><h3 id="1-C-内存分配与内核分配器对比"><a href="#1-C-内存分配与内核分配器对比" class="headerlink" title="1. C++ 内存分配与内核分配器对比"></a>1. C++ 内存分配与内核分配器对比</h3><ul>
+<li><strong>C++ new&#x2F;delete 与内核 buddy&#x2F;slab 分配器</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span>* arr = <span class="hljs-keyword">new</span> <span class="hljs-type">int</span>[<span class="hljs-number">100</span>]; <span class="hljs-comment">// 动态分配 100 个 int</span><br>    <span class="hljs-comment">// ... 使用 arr ...</span><br>    <span class="hljs-keyword">delete</span>[] arr; <span class="hljs-comment">// 释放内存</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; C++ new&#x2F;delete 由运行时库管理，内核则用 buddy&#x2F;slab 分配器管理物理内存和小对象。</p>
+<ul>
+<li><strong>std::allocator 与内核 slab 分配器</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br>std::vector&lt;<span class="hljs-type">int</span>, std::allocator&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">v</span>(<span class="hljs-number">100</span>);<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; std::allocator 为 STL 容器分配内存，类似内核 slab 分配器为小对象池化分配。</p>
+<ul>
+<li><strong>智能指针（RAII）与内核自动资源管理</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-function">std::unique_ptr&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">p</span><span class="hljs-params">(<span class="hljs-keyword">new</span> <span class="hljs-type">int</span>(<span class="hljs-number">42</span>))</span></span>;<br>    <span class="hljs-comment">// 离开作用域自动释放</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; 智能指针自动释放资源，内核通过引用计数、slab 回收等机制管理生命周期。</p>
+<hr>
+<h2 id="七、文件系统实现与-C-资源管理对照"><a href="#七、文件系统实现与-C-资源管理对照" class="headerlink" title="七、文件系统实现与 C++ 资源管理对照"></a>七、文件系统实现与 C++ 资源管理对照</h2><h3 id="C-文件-IO-与-RAII"><a href="#C-文件-IO-与-RAII" class="headerlink" title="C++ 文件 IO 与 RAII"></a>C++ 文件 IO 与 RAII</h3><h4 id="1-文件读写与自动资源管理"><a href="#1-文件读写与自动资源管理" class="headerlink" title="1. 文件读写与自动资源管理"></a>1. 文件读写与自动资源管理</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fstream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-function">std::unique_ptr&lt;std::fstream&gt; <span class="hljs-title">file</span><span class="hljs-params">(<span class="hljs-keyword">new</span> std::fstream(<span class="hljs-string">&quot;test.txt&quot;</span>, std::ios::out))</span></span>;<br>    <span class="hljs-keyword">if</span> (file-&gt;<span class="hljs-built_in">is_open</span>()) &#123;<br>        *file &lt;&lt; <span class="hljs-string">&quot;Hello, Linux!&quot;</span> &lt;&lt; std::endl;<br>    &#125;<br>    <span class="hljs-comment">// unique_ptr 自动关闭文件，防止资源泄漏</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; std::fstream 和 unique_ptr 体现 RAII 思想，类似内核 VFS 自动管理 file&#x2F;inode 结构。</p>
+<h4 id="2-文件锁"><a href="#2-文件锁" class="headerlink" title="2. 文件锁"></a>2. 文件锁</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fstream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mutex&gt;</span></span><br>std::mutex file_mtx;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">safe_write</span><span class="hljs-params">(<span class="hljs-type">const</span> std::string&amp; msg)</span> </span>&#123;<br>    <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(file_mtx)</span></span>;<br>    <span class="hljs-function">std::ofstream <span class="hljs-title">ofs</span><span class="hljs-params">(<span class="hljs-string">&quot;log.txt&quot;</span>, std::ios::app)</span></span>;<br>    ofs &lt;&lt; msg &lt;&lt; std::endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; C++ 用 mutex 保护文件写入，类似内核文件系统的 inode 锁。</p>
+<hr>
+<h2 id="八、C-与内核在网络编程、事件驱动等方面的对照"><a href="#八、C-与内核在网络编程、事件驱动等方面的对照" class="headerlink" title="八、C++ 与内核在网络编程、事件驱动等方面的对照"></a>八、C++ 与内核在网络编程、事件驱动等方面的对照</h2><h3 id="1-网络编程"><a href="#1-网络编程" class="headerlink" title="1. 网络编程"></a>1. 网络编程</h3><h4 id="C-socket-编程与内核协议栈对比"><a href="#C-socket-编程与内核协议栈对比" class="headerlink" title="C++ socket 编程与内核协议栈对比"></a>C++ socket 编程与内核协议栈对比</h4><ul>
+<li><strong>C++ 原生 socket 编程</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;netinet/in.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstring&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> sock = <span class="hljs-built_in">socket</span>(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br>    sockaddr_in addr&#123;&#125;;<br>    addr.sin_family = AF_INET;<br>    addr.sin_port = <span class="hljs-built_in">htons</span>(<span class="hljs-number">8080</span>);<br>    addr.sin_addr.s_addr = <span class="hljs-built_in">inet_addr</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>);<br>    <span class="hljs-built_in">connect</span>(sock, (sockaddr*)&amp;addr, <span class="hljs-built_in">sizeof</span>(addr));<br>    <span class="hljs-type">const</span> <span class="hljs-type">char</span>* msg = <span class="hljs-string">&quot;hello&quot;</span>;<br>    <span class="hljs-built_in">send</span>(sock, msg, <span class="hljs-built_in">strlen</span>(msg), <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">close</span>(sock);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; C++ socket API 直接调用内核 socket、connect、send、recv 等系统调用，底层由内核协议栈处理。</p>
+<ul>
+<li><strong>C++ 高性能异步网络库（asio）</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;asio.hpp&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-keyword">using</span> asio::ip::tcp;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    asio::io_context io;<br>    <span class="hljs-function">tcp::socket <span class="hljs-title">socket</span><span class="hljs-params">(io)</span></span>;<br>    socket.<span class="hljs-built_in">connect</span>(tcp::<span class="hljs-built_in">endpoint</span>(asio::ip::<span class="hljs-built_in">make_address</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>), <span class="hljs-number">8080</span>));<br>    asio::<span class="hljs-built_in">write</span>(socket, asio::<span class="hljs-built_in">buffer</span>(<span class="hljs-string">&quot;hello&quot;</span>));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; asio 库实现异步 IO，底层依赖内核 epoll&#x2F;kqueue 等事件通知。</p>
+<hr>
+<h3 id="2-事件驱动"><a href="#2-事件驱动" class="headerlink" title="2. 事件驱动"></a>2. 事件驱动</h3><h4 id="C-事件驱动模型与内核事件通知对比"><a href="#C-事件驱动模型与内核事件通知对比" class="headerlink" title="C++ 事件驱动模型与内核事件通知对比"></a>C++ 事件驱动模型与内核事件通知对比</h4><ul>
+<li><strong>C++ select&#x2F;epoll 封装</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/epoll.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><span class="hljs-type">int</span> epfd = <span class="hljs-built_in">epoll_create1</span>(<span class="hljs-number">0</span>);<br><span class="hljs-comment">// 添加 fd 到 epoll</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">epoll_event</span> ev&#123;&#125;;<br>ev.events = EPOLLIN;<br>ev.data.fd = sockfd;<br><span class="hljs-built_in">epoll_ctl</span>(epfd, EPOLL_CTL_ADD, sockfd, &amp;ev);<br><span class="hljs-comment">// 等待事件</span><br><span class="hljs-function">std::vector&lt;epoll_event&gt; <span class="hljs-title">events</span><span class="hljs-params">(<span class="hljs-number">10</span>)</span></span>;<br><span class="hljs-type">int</span> n = <span class="hljs-built_in">epoll_wait</span>(epfd, events.<span class="hljs-built_in">data</span>(), <span class="hljs-number">10</span>, <span class="hljs-number">1000</span>);<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; C++ 可直接使用内核 epoll 接口实现高效事件驱动，适合高并发服务器。</p>
+<ul>
+<li><strong>asio 异步事件驱动</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;asio.hpp&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">on_read</span><span class="hljs-params">(<span class="hljs-type">const</span> asio::error_code&amp; ec, std::<span class="hljs-type">size_t</span> bytes)</span> </span>&#123;<br>    <span class="hljs-keyword">if</span> (!ec) std::cout &lt;&lt; <span class="hljs-string">&quot;Read &quot;</span> &lt;&lt; bytes &lt;&lt; <span class="hljs-string">&quot; bytes\n&quot;</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    asio::io_context io;<br>    asio::ip::<span class="hljs-function">tcp::socket <span class="hljs-title">sock</span><span class="hljs-params">(io)</span></span>;<br>    <span class="hljs-comment">// ... 连接 ...</span><br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">1024</span>];<br>    sock.<span class="hljs-built_in">async_read_some</span>(asio::<span class="hljs-built_in">buffer</span>(buf), on_read);<br>    io.<span class="hljs-built_in">run</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F; asio 通过回调实现事件驱动，底层依赖内核 epoll&#x2F;poll。</p>
+<ul>
+<li><strong>内核事件通知机制</strong><ul>
+<li>内核通过 epoll、poll、select、信号等机制通知用户空间事件。</li>
+<li>C++ 高性能网络库（如 asio、libevent）底层均依赖这些内核机制。</li>
+</ul>
+</li>
+</ul>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="print-no-link">#内存管理</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD/" class="print-no-link">#性能</a>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="print-no-link">#操作系统</a>
+      
+        <a href="/tags/%E5%86%85%E6%A0%B8/" class="print-no-link">#内核</a>
+      
+        <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" class="print-no-link">#进程管理</a>
+      
+        <a href="/tags/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" class="print-no-link">#文件系统</a>
+      
+        <a href="/tags/%E7%BD%91%E7%BB%9C/" class="print-no-link">#网络</a>
+      
+        <a href="/tags/%E5%AE%89%E5%85%A8/" class="print-no-link">#安全</a>
+      
+        <a href="/tags/C-%E5%AF%B9%E7%85%A7/" class="print-no-link">#C++对照</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux操作系统详解</div>
+      <div>https://hwl111.github.io/2025/07/笔记/Linux操作系统详解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hwl</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/STL%E6%B7%B1%E5%BA%A6%E6%8E%A2%E7%B4%A2/" title="STL深度探索">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">STL深度探索</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/%E7%AC%94%E8%AE%B0/C++%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7%E5%BA%93%E8%AF%A6%E8%A7%A3/" title="C++实用工具库详解">
+                        <span class="hidden-mobile">C++实用工具库详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"ZzxSVJDiTw78LvyVEByWaybw-gzGzoHsz","appKey":"wU4AutBKes8CM4zNInqzhHoQ","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+<footer class="text-center mt-5 py-3">
+  <!-- 保留 Fluid 默认的页脚链接（Hexo + Fluid） -->
+   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("03/28/2025 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
